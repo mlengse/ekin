@@ -1,6 +1,6 @@
 require('dotenv').config()
 const { getEkin } = require('./nmrunner')
-const { tableKegEval } = require('./browser')
+const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan, buatKodeRealisasiKeg } = require('./browser')
 const url = process.env.EKIN_URL
 const username = process.env.EKIN_USERNAME
 const password = process.env.EKIN_PASSWORD
@@ -14,9 +14,8 @@ const realisasiKegiatanUrl = process.env.REALISASI_KEGIATAN_URL
 const tableId = process.env.TABLE_ID
 
 
-const ekinGetDataKeg = async () => {
+const ekinGetDataKeg = async ({ ekin }) => {
   try {
-    let { ekin } = await ekinLogin()
     await ekin
       .wait(realisasiKegiatan)
       .goto(url + realisasiKegiatanUrl)
@@ -113,37 +112,70 @@ const approving = async () => {
 
 }
 
-const ekinInputRealisasiKegiatan = async (tgl, dataKeg) => {
+const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => {
   try {
-    await ekin.click('#TGL_REALISASI')
-      .wait('#TGL_REALISASI > .bfh-datepicker-calendar > table > tbody td[data-day="' + tgl + '"]')
-      .click('#TGL_REALISASI > .bfh-datepicker-calendar > table > tbody td[data-day="' + tgl + '"]')
+    let tglNum = Number(tgl)
+    await ekin
+      .click('#TGL_REALISASI > div.input-group.bfh-datepicker-toggle > span')
+      .wait('#TGL_REALISASI > div.bfh-datepicker-calendar > table > tbody td[data-day="' + tglNum + '"]')
+      .click('#TGL_REALISASI > div.bfh-datepicker-calendar > table > tbody td[data-day="' + tglNum + '"]')
 
     for (let { act, bln, keg, jml } of dataKeg) {
-      let jmlInp = (jml / tgls.length).toFixed()
-      await ekin.evaluate((act) => {
-        eval(act)
-        window.confirm = function (_, __) {
-          return true
+      console.log(tgl, bln, keg)
+      await ekin.wait('#TOTAL_POIN')
+      let totalPoin
+      while(!totalPoin) {
+        totalPoin = await ekin.evaluate(() => document.getElementById('TOTAL_POIN').textContent)
+        totalPoin = totalPoin.split(":")[1]
+        if(totalPoin){
+          totalPoin = Number(totalPoin.split(' ')[1])
+        } else {
+          totalPoin = false
         }
-        buat_kode_d_realisasi_kegiatan()
-      }, act)
-      if (keg.includes('catatan medik')) {
-        await ekin.type('#KD_AKTIVITAS', 'Mencatat')
-      } else {
-        await ekin.type('#KD_AKTIVITAS', 'Memeriksa')
       }
-      await ekin
-        .insert('#NM_KEGIATAN', keg)
-        .insert('#KUANTITAS', jmlInp)
-      /*
-      await ekin.click('#JAM_MULAI')
-        .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-        .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input', )
-      */
-      await ekin.evaluate(() => simpan())
-      await ekin.wait(2000)
-      console.log(tgl, bln, keg, jmlInp)
+      console.log(totalPoin)
+      if( 8500 > totalPoin ) {
+        let tglKeg = `${tgl} ${keg}`
+
+        let tableRealisasiKeg = await ekin
+          .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
+          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
+          .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
+        //console.log(tableRealisasiKeg[0]);
+
+        if(tableRealisasiKeg[0].act) {
+          //act = tableRealisasiKeg[0].act
+          //console.log(act);
+          //await ekin.evaluate((act)=> eval(act), act)
+          console.log('sudah diinput')
+
+        } else {
+          let jmlInp = (jml / tglLength).toFixed()
+          await ekin.evaluate(buatKodeRealisasiKeg, act)
+          if (keg.includes('catatan medik')) {
+            await ekin.type('#KD_AKTIVITAS', 'Mencatat')
+          } else {
+            await ekin.type('#KD_AKTIVITAS', 'Memeriksa')
+          }
+          await ekin
+            .insert('#NM_KEGIATAN', keg)
+            .insert('#KUANTITAS', jmlInp)
+          
+          await ekin.click('#JAM_MULAI')
+            .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+            .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input', )
+          await ekin.evaluate(saveRealisasiKegiatan)
+          
+          //await ekin.wait(2000)
+          console.log('diinput:', jmlInp)
+
+        }
+
+
+      } else {
+        console.log('poin tercapai. selanjutnya silahkan input manual')
+      }
 
     }
 
@@ -172,60 +204,22 @@ const ekinInputBulanan = async (bln, blnNum) => {
         return data
       })
     }
-    console.log(blnList)
     let dataRencanaBln = await ekin
       .wait('#tabel_d_kegiatan_bulan')
       .select('#tabel_d_kegiatan_bulan_length > label > select', '100')
-      .type('#tabel_d_kegiatan_bulan_filter > label > input', bln)
+      .insert('#tabel_d_kegiatan_bulan_filter > label > input', bln)
       .evaluate(tableKegEval, '#tabel_d_kegiatan_bulan')
 
     for (let rencThn of dataRencanaThn) {
       let rencExist = dataRencanaBln.filter(rencBln => rencBln.keg && rencBln.keg === rencThn.keg)
       if (!rencExist.length) {
         let res = await ekin
-          .evaluate(act => {
-            eval(act)
-            window.confirm = function (_, __) {
-              return true
-            }
-            buat_kode_d_kegiatan_bulan()
-          }, rencThn.act)
+          .evaluate(buatKodeInputBln, rencThn.act)
           .select('#KD_BULAN', blnNum)
           .insert('#NM_KEGIATAN_BULAN', rencThn.keg)
           .insert('#KUANTITAS', (rencThn.text[3] / 12).toFixed())
-          .wait(2000)
-          .evaluate(() => {
-            window.alert = (_) => true
-            return new Promise(resolve => {
-              $.ajax({
-                type: 'POST',
-                url: "http://203.190.116.234/e-kinerja/v1/d_kegiatan_bulan/simpan",
-                data: $("#form_d_kegiatan_bulan").serialize(),
-                success: function (data) {
-                  data = JSON.parse(data);
-                  if (data.status) {
-                    resolve(data)
-                    hide_loading();
-                    tabel_d_kegiatan_bulan();
-                    alert('Berhasil menyimpan data');
-                    alert('data berhasil disimpan');
-                    batal();
-                  }
-                  else {
-                    resolve(data)
-                    hide_loading();
-                    alert('Gagal menyimpan data : ' + data.error);
-                  }
-
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                  resolve(textStatus)
-                  hide_loading();
-                  alert('Gagal menyimpan data:' + data.error);
-                }
-              });
-            })
-          })
+          //wait(2000)
+          .evaluate(saveInputBulanan)
 
         console.log(res)
       }

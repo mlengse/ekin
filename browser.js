@@ -1,8 +1,105 @@
-module.exports = {
-  tableKegEval
+const saveRealisasiKegiatan = () => {
+  window.alert = (_) => true
+  KD_KEGIATAN_BULAN1 = $('#KD_KEGIATAN_BULAN').val();
+  NM_KEGIATAN_BULAN1 = $('#NM_KEGIATAN_BULAN').val();
+  KD_REALISASI_KEGIATAN1 = $('#KD_REALISASI_KEGIATAN').val();
+  NM_KEGIATAN1 = $('#NM_KEGIATAN').val();
+  KD_AKTIVITAS1 = $('#KD_AKTIVITAS').val();
+  KUANTITAS1 = $('#KUANTITAS').val();
+  TGL_REALISASI1 = $('#TGL_REALISASI').val();
+  JAM_MULAI1 = $('#JAM_MULAI').val();
+  JAM_SELESAI1 = $('#JAM_SELESAI').val();
+  BIAYA1 = $('#BIAYA').val();
+  KETERANGAN1 = $('#KETERANGAN').val();
+  if (KD_REALISASI_KEGIATAN1) {
+    show_loading();
+    $.ajax({
+      type: "POST",
+      url: "http://203.190.116.234/e-kinerja/v1/d_realisasi_kegiatan/simpan",
+      data: {
+        KD_KEGIATAN_BULAN: KD_KEGIATAN_BULAN1,
+        NM_KEGIATAN_BULAN: NM_KEGIATAN_BULAN1,
+        KD_REALISASI_KEGIATAN: KD_REALISASI_KEGIATAN1,
+        NM_KEGIATAN: NM_KEGIATAN1,
+        KD_AKTIVITAS: KD_AKTIVITAS1,
+        KUANTITAS: KUANTITAS1,
+        TGL_REALISASI: TGL_REALISASI1,
+        JAM_MULAI: JAM_MULAI1,
+        JAM_SELESAI: JAM_SELESAI1,
+        BIAYA: BIAYA1,
+        KETERANGAN: KETERANGAN1
+      },
+      success: function (data) {
+        data = JSON.parse(data);
+        if (data.status) {
+          hide_loading();
+          tampil_data();
+          // tabel_d_realisasi_kegiatan();
+          // alert('Berhasil menyimpan data');
+          batal();
+        }
+        else {
+          hide_loading();
+          alert('Gagal menyimpan data : ' + data.error);
+        }
+      }
+    });
+  }
+  else {
+    alert('Realisasi kegiatan kosong');
+  }
 }
 
-function tableKegEval(tableId) {
+const buatKodeRealisasiKeg = (act) => {
+  eval(act)
+  window.confirm = function (_, __) {
+    return true
+  }
+  buat_kode_d_realisasi_kegiatan()
+}
+
+const saveInputBulanan = () => {
+  window.alert = (_) => true
+  return new Promise(resolve => {
+    $.ajax({
+      type: 'POST',
+      url: "http://203.190.116.234/e-kinerja/v1/d_kegiatan_bulan/simpan",
+      data: $("#form_d_kegiatan_bulan").serialize(),
+      success: function (data) {
+        data = JSON.parse(data);
+        if (data.status) {
+          resolve(data)
+          hide_loading();
+          tabel_d_kegiatan_bulan();
+          alert('Berhasil menyimpan data');
+          alert('data berhasil disimpan');
+          batal();
+        }
+        else {
+          resolve(data)
+          hide_loading();
+          alert('Gagal menyimpan data : ' + data.error);
+        }
+
+      },
+      error: function (xhr, textStatus, errorThrown) {
+        resolve(textStatus)
+        hide_loading();
+        alert('Gagal menyimpan data:' + data.error);
+      }
+    });
+  })
+}
+
+const buatKodeInputBln = act => {
+  eval(act)
+  window.confirm = function (_, __) {
+    return true
+  }
+  buat_kode_d_kegiatan_bulan()
+}
+
+const tableKegEval = (tableId) => {
   let table = document.getElementById(tableId.split('#').join(''))
   let tableBody = table.querySelectorAll('tbody > tr')
   let kegList = []
@@ -24,4 +121,12 @@ function tableKegEval(tableId) {
     kegList.push(keg)
   }
   return kegList
+}
+
+module.exports = {
+  tableKegEval,
+  saveRealisasiKegiatan,
+  buatKodeRealisasiKeg,
+  saveInputBulanan,
+  buatKodeInputBln
 }

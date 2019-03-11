@@ -20,7 +20,7 @@ const testDb = async (db) => {
         console.log("Database created successfully: ", db);
       });
     }
-    arango.useDatabase(database);
+    arango.useDatabase(db);
     return arango;
   } catch (err) { console.log(err) }//{info(err)}	
 }
