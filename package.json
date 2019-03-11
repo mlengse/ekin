@@ -18,6 +18,7 @@
   "homepage": "https://github.com/mlengse/ekin#readme",
   "dependencies": {
     "arangojs": "^6.10.0",
+    "csv-parser": "^2.2.0",
     "dotenv": "^6.2.0",
     "moment": "^2.24.0",
     "nightmare": "^3.0.1",

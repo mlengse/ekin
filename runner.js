@@ -1,5 +1,6 @@
 require('dotenv').config()
 const moment = require('moment')
+const lists = require('./ekinList')
 const { ekinInputBulanan, ekinGetDataKeg, ekinInputRealisasiKegiatan, approving } = require('./ekin')
 const { query, aql } = require('./db')
 moment.locale('id')
@@ -44,19 +45,26 @@ const getTgl = async (num) => {
 
   ; (async () => {
     try {
-      const { tglList, tglLength, bln, blnNum } = await getTgl(0)
-      let { ekin } = await ekinInputBulanan(bln, blnNum)
-      if (tglList.length) {
-        const { dataKeg } = await ekinGetDataKeg({ ekin })
-        for (let tgl of tglList) {
-          await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
+      for(let list of await lists()) {
+        let username = list.NIP
+        let password = list.NIP
+        const { tglList, tglLength, bln, blnNum } = await getTgl(0)
+        let { ekin } = await ekinInputBulanan(bln, blnNum, username, password)
+        
+        if (tglList.length) {
+          const { dataKeg } = await ekinGetDataKeg({ ekin })
+          for (let tgl of tglList) {
+            await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
+          }
         }
-      }
-      await ekin.wait(2000).end();
-      let a = await approving()
-      ekin = a.ekin
+        
+        await ekin.wait(2000).end();
+        
+        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+        await approving(username, blnOnly)
+        
 
-      await ekin.wait(2000).end()
+      }
     } catch (err) {
       console.log(err)
     }
