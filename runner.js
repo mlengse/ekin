@@ -53,15 +53,16 @@ const getTgl = async (num) => {
         
         if (tglList.length) {
           const { dataKeg } = await ekinGetDataKeg({ ekin })
+          console.log(dataKeg.length)
           for (let tgl of tglList) {
             await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
           }
         }
         
-        await ekin.wait(2000).end();
+        await ekin.end();
         
         let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
-        await approving(username, blnOnly)
+        //await approving(username, blnOnly)
         
 
       }

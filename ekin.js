@@ -21,7 +21,12 @@ const ekinGetDataKeg = async ({ ekin }) => {
       .wait(realisasiKegiatan)
       .goto(url + realisasiKegiatanUrl)
       .wait(tableId)
-    let dataKeg = await ekin.evaluate(tableKegEval, tableId)
+      .select("#tabel_d_kegiatan_bulan_length > label > select", "100");
+    let dataKeg
+    while(!dataKeg) {
+      dataKeg = await ekin.evaluate(tableKegEval, tableId);
+    }
+    
     return {
       ekin, dataKeg
     }
@@ -125,6 +130,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
       .click('#TGL_REALISASI > div.bfh-datepicker-calendar > table > tbody td[data-day="' + tglNum + '"]')
 
     for (let { act, bln, keg, jml } of dataKeg) {
+
       await ekin.wait('#TOTAL_POIN')
       let totalPoin
       while(totalPoin === undefined || totalPoin === null || totalPoin === false) {
@@ -136,8 +142,12 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
           totalPoin = false
         }
       }
-      console.log(tgl, bln, keg)
-      if( 8500 > totalPoin ) {
+
+      if(totalPoin > 8500) {
+       // console.log("total poin:", totalPoin);
+       // console.log('poin tercapai. selanjutnya silahkan input manual')
+        break
+      } else {
         let tglSearch = moment(`${tgl} ${bln}`, 'DD MMMM YYYY').format('DD/MM/YYYY')
         let tglKeg = `${tglSearch} ${keg}`
 
@@ -151,57 +161,117 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
           .insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
           .type('#tabel_d_realisasi_kegiatan_filter > label > input', last)
           .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
-        //console.log(tableRealisasiKeg[0]);
 
-        if(tableRealisasiKeg[0].act) {
-          //act = tableRealisasiKeg[0].act
-          //console.log(act);
-          //await ekin.evaluate((act)=> eval(act), act)
-          console.log("total poin:", totalPoin);
-          console.log('sudah diinput')
 
+        let jmlInp = 0
+        if (jml > 1) {
+          jmlInp = Math.ceil(jml / tglLength).toFixed()
+          console.log('jml', jml)
+          console.log('tgl length', tglLength)
+          console.log('jml inp', jmlInp)
+        }
+
+        let kdAktivitas
+        if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Mencatat'
+        } else if (['pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Memeriksa'
+        } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Mengkoordinasikan'
+        } else if (['Menyiapkan bahan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Menyiapkan data/dokumen/laporan'
+        } else if (['rencana'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Merencanakan'
+        } else if (['menyusun instrumen'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Menyusun data/bahan'
+        } else if (['umpulkan data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Mengumpulkan Bahan/Data'
+        } else if (['mengolah data', 'analisis data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Mengolah Data'
+        } else if (['membuat rancangan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Membuat Rancangan'
+        } else if (['mengajar', 'melatih', 'memberikan pelatihan', 'advokasi', 'penyuluhan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          kdAktivitas = 'Membimbing'
         } else {
-          let jmlInp = (jml / tglLength).toFixed()
+          console.log(keg)
+          console.log('kode aktivitas belum ditentukan')
+        }
+
+        if( tableRealisasiKeg.length && tableRealisasiKeg[0].act) {
+          //console.log('sudah diinput')
+          await ekin.evaluate((act) => eval(act), tableRealisasiKeg[0].act)
+        } else {
           if(jmlInp > 0 ){
             await ekin.evaluate(buatKodeRealisasiKeg, act)
-            let kdAktivitas
-            if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.includes(e))) {
-              kdAktivitas = 'Mencatat'
-            } else if (['pasien'].filter(e => keg.includes(e))){
-              kdAktivitas = 'Memeriksa'
-            }
-
-            if(kdAktivitas) {
-              await ekin.type('#KD_AKTIVITAS', kdAktivitas)
-              await ekin
-                .insert('#NM_KEGIATAN', keg)
-                .insert('#KUANTITAS', jmlInp)
-
-              await ekin.click('#JAM_MULAI')
-                .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-                .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-              await ekin.evaluate(saveRealisasiKegiatan)
-
-              //await ekin.wait(2000)
-              console.log('total poin:', totalPoin);
-              console.log('diinput:', jmlInp)
-
-            } else {
-              console.log('kode aktivitas belum ditentukan')
-            }
-          } else {
-            console.log('input 0')
           }
         }
-      } else {
-        console.log("total poin:", totalPoin);
-        console.log('poin tercapai. selanjutnya silahkan input manual')
-      }
+
+        if (kdAktivitas) {
+          await ekin.type('#KD_AKTIVITAS', kdAktivitas)
+          await ekin.type("#NM_KEGIATAN", '');
+          await ekin.insert('#NM_KEGIATAN', keg)
+        }
+
+        if (jmlInp > 0) {
+          await ekin.insert('#KUANTITAS', jmlInp)
+          console.log("diinput:", jmlInp);
+        }
+
+        if( (tableRealisasiKeg.length && tableRealisasiKeg[0].act) || (jmlInp > 0 && kdAktivitas) ) {
+          await ekin.click('#JAM_MULAI')
+            .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+            .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+          let res = await ekin.evaluate(saveRealisasiKegiatan)
+          console.log(res)
+          console.log('total poin:', totalPoin);
+        }
+
+      } 
     }
+    
   } catch (err) {
     console.log(err)
   }
 
+}
+
+const getBln = async ekin => {
+  try{
+    let blnList = {
+      data: []
+    };
+
+    let data
+
+    while(!data){
+      data = await ekin.evaluate(() => {
+        let data = get_tb_bulan()
+        return data
+      })
+    }
+    
+
+    await ekin.evaluate(()=> set_bulan())
+
+    while (!blnList.data.length) {
+      blnList = Object.assign(
+        {},
+        blnList,
+        JSON.parse(
+          await ekin.evaluate(() => {
+            var data = get_tb_bulan();
+            return data;
+          })
+        )
+      );
+    }
+
+    //console.log(blnList.data);
+    //return blnList
+
+  }catch(err){
+    console.log(err)
+  }
 }
 
 const ekinInputBulanan = async (bln, blnNum, u, p) => {
@@ -210,21 +280,14 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
     let dataRencanaThn = await ekin
       .wait(rencanaBulanan)
       .goto(url + rencanaBulananUrl)
-      .wait('#tabel_d_kegiatan_tahun')
-      .select('#tabel_d_kegiatan_tahun_length > label > select', '100')
-      .evaluate(tableKegEval, '#tabel_d_kegiatan_tahun')
+//      .evaluate(() => insert_tb_bulan())
+      .evaluate(() => start_data())
+      .wait("#tabel_d_kegiatan_tahun")
+      .select("#tabel_d_kegiatan_tahun_length > label > select", "100")
+      .evaluate(tableKegEval, "#tabel_d_kegiatan_tahun");
 
-    await ekin.evaluate(() => start_data())
-    let blnList = null
+    await getBln(ekin)
 
-    while (!blnList) {
-      blnList = await ekin.evaluate(() => {
-        var data = get_tb_bulan();
-        return data
-      })
-    }
-
-    console.log(blnList)
     //console.log(blnList.data[0].map(e=> e.NM_BULAN))
 
     let dataRencanaBln = await ekin
@@ -233,18 +296,45 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
       .insert('#tabel_d_kegiatan_bulan_filter > label > input', bln)
       .evaluate(tableKegEval, '#tabel_d_kegiatan_bulan')
 
+    //console.log(dataRencanaThn)
+    //console.log(dataRencanaBln)
+
+
     for (let rencThn of dataRencanaThn) {
-      let kuantitasBln = (rencThn.text[3] / 12).toFixed()
-      //console.log(kuantitasBln)
-      let rencExist = dataRencanaBln.filter(rencBln => rencBln.keg && rencBln.keg === rencThn.keg)
-      if (!rencExist.length && kuantitasBln > 0 ) {
-        let res = await ekin
-          .evaluate(buatKodeInputBln, rencThn.act)
-          .select('#KD_BULAN', blnNum)
-          .insert('#NM_KEGIATAN_BULAN', rencThn.keg)
-          .insert('#KUANTITAS', kuantitasBln)
-          .wait(2000)
-          .evaluate(saveInputBulanan)
+      let kuantitasBln = Math.ceil(rencThn.text[3] / 12).toFixed()
+      let rencExist = dataRencanaBln.filter(rencBln => {
+        let rencBlnArr = rencBln.act.split('\n').filter(e=>e!=='').map(e=>e.split('\',').join('').split('\'').join('').trim())
+        //console.log(rencBlnArr)
+        if(rencBlnArr[1] === rencThn.bln){
+          //console.log(rencBln)
+          //console.log(rencThn.bln)
+          return true
+        }
+        return false
+      })
+      await getBln(ekin)
+      if (!rencExist.length){
+        await ekin.evaluate(buatKodeInputBln, rencThn.act)
+        await ekin.evaluate(() => buat_kode_d_kegiatan_bulan())
+        await ekin.select("#KD_BULAN", blnNum)
+        await ekin.insert("#NM_KEGIATAN_BULAN", rencThn.keg)
+      } else {
+        //console.log(rencThn)
+        //console.log(rencExist[0])
+        await ekin.evaluate(act=> eval(act), rencExist[0].act )
+      }
+      if( (!rencExist.length && kuantitasBln > 0) || (rencExist.length && kuantitasBln > Number(rencExist[0].jml))) {
+        console.log(kuantitasBln)
+        if(rencExist.length){
+          if(rencExist[0].jml > 500){
+            await ekin.wait(10000)
+          }
+          console.log(rencExist[0].jml)
+        }
+        await ekin.insert("#KUANTITAS", '');
+        await ekin.insert("#KUANTITAS", kuantitasBln)
+        await ekin.wait(500);
+        let res = await ekin.evaluate(saveInputBulanan);
 
         console.log(res)
       }
@@ -252,7 +342,8 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
     }
 
     return {
-      ekin, dataRencanaThn
+      ekin, 
+      dataRencanaThn
     }
   } catch (err) {
     console.log(err)

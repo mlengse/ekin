@@ -11,43 +11,47 @@ const saveRealisasiKegiatan = () => {
   JAM_SELESAI1 = $('#JAM_SELESAI').val();
   BIAYA1 = $('#BIAYA').val();
   KETERANGAN1 = $('#KETERANGAN').val();
-  if (KD_REALISASI_KEGIATAN1) {
-    show_loading();
-    $.ajax({
-      type: "POST",
-      url: "http://203.190.116.234/e-kinerja/v1/d_realisasi_kegiatan/simpan",
-      data: {
-        KD_KEGIATAN_BULAN: KD_KEGIATAN_BULAN1,
-        NM_KEGIATAN_BULAN: NM_KEGIATAN_BULAN1,
-        KD_REALISASI_KEGIATAN: KD_REALISASI_KEGIATAN1,
-        NM_KEGIATAN: NM_KEGIATAN1,
-        KD_AKTIVITAS: KD_AKTIVITAS1,
-        KUANTITAS: KUANTITAS1,
-        TGL_REALISASI: TGL_REALISASI1,
-        JAM_MULAI: JAM_MULAI1,
-        JAM_SELESAI: JAM_SELESAI1,
-        BIAYA: BIAYA1,
-        KETERANGAN: KETERANGAN1
-      },
-      success: function (data) {
-        data = JSON.parse(data);
-        if (data.status) {
-          hide_loading();
-          tampil_data();
-          // tabel_d_realisasi_kegiatan();
-          // alert('Berhasil menyimpan data');
-          batal();
+  return new Promise(resolve=>{
+    if (KD_REALISASI_KEGIATAN1) {
+      show_loading();
+      $.ajax({
+        type: "POST",
+        url: "http://203.190.116.234/e-kinerja/v1/d_realisasi_kegiatan/simpan",
+        data: {
+          KD_KEGIATAN_BULAN: KD_KEGIATAN_BULAN1,
+          NM_KEGIATAN_BULAN: NM_KEGIATAN_BULAN1,
+          KD_REALISASI_KEGIATAN: KD_REALISASI_KEGIATAN1,
+          NM_KEGIATAN: NM_KEGIATAN1,
+          KD_AKTIVITAS: KD_AKTIVITAS1,
+          KUANTITAS: KUANTITAS1,
+          TGL_REALISASI: TGL_REALISASI1,
+          JAM_MULAI: JAM_MULAI1,
+          JAM_SELESAI: JAM_SELESAI1,
+          BIAYA: BIAYA1,
+          KETERANGAN: KETERANGAN1
+        },
+        success: function (data) {
+          data = JSON.parse(data);
+          resolve(data)
+          if (data.status) {
+            hide_loading();
+            tampil_data();
+            // tabel_d_realisasi_kegiatan();
+            // alert('Berhasil menyimpan data');
+            batal();
+          }
+          else {
+            hide_loading();
+            alert('Gagal menyimpan data : ' + data.error);
+          }
         }
-        else {
-          hide_loading();
-          alert('Gagal menyimpan data : ' + data.error);
-        }
-      }
-    });
-  }
-  else {
-    alert('Realisasi kegiatan kosong');
-  }
+      });
+    }
+    else {
+      resolve("Realisasi kegiatan kosong");
+    }
+
+  })
 }
 
 const buatKodeRealisasiKeg = (act) => {
@@ -92,11 +96,14 @@ const saveInputBulanan = () => {
 }
 
 const buatKodeInputBln = act => {
-  eval(act)
-  window.confirm = function (_, __) {
-    return true
-  }
-  buat_kode_d_kegiatan_bulan()
+  window.confirm = function(_, __) {
+    return true;
+  };
+  let actArr = act.split(`','`)
+  let kode = actArr[0].split(`'`)[1]
+  let desc = actArr[1].split(`'`)[0];
+  klik_data_d_kegiatan_tahun(kode, desc)
+  //eval(act)
 }
 
 const tableKegEval = (tableId) => {
@@ -118,6 +125,9 @@ const tableKegEval = (tableId) => {
     keg.bln = keg.text[0]
     keg.keg = keg.text[1]
     keg.jml = keg.text[2]
+    if(keg.act && keg.act.includes('kegiatan_tahun')){
+      keg.jml = keg.text[4]
+    }
     kegList.push(keg)
   }
   return kegList
