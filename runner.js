@@ -55,22 +55,28 @@ const getTgl = async (num) => {
         let password = list.NIP
         const { tglList, tglLength, bln, blnNum } = await getTgl(0)
         
-        let { presensi } = await loginPresensi()
-        let { ekin } = await ekinInputBulanan(bln, blnNum, username, password)
+        let [{ presensi }, { ekin }] = await Promise.all([
+         // loginPresensi(),
+          () => null,
+          ekinInputBulanan(bln, blnNum, username, password)
+        ])
 
         if (tglList.length) {
           let tglPresensi = tglList.slice(1, 5)
           const { dataKeg } = await ekinGetDataKeg({ ekin });
           console.log(dataKeg.length);
-          for (let tgl of tglPresensi) {
-            await searchTglAndNIP(presensi, tgl, bln, list)
-            await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
-
+          for( let tgl of tglPresensi) {
+            await Promise.all([
+           //   searchTglAndNIP(presensi, tgl, bln, list),
+              ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
+            ])
           }
         }
         
-        await ekin.end();
-        await presensi.end()
+        await Promise.all([
+          ekin.end(),
+          //presensi.end()
+        ])
 
         let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
         //await approving(username, blnOnly)

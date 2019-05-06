@@ -6,7 +6,7 @@ module.exports = {
 
 function getPresensi() {
   return new Nightmare({
-    show: false,
+    show: true,
     width: 1900,
     //gotoTimeout: 300000,
     webPreferences: {
@@ -20,7 +20,7 @@ function getPresensi() {
 
 function getEkin() {
   return new Nightmare({
-    show: false,
+    show: true,
     width: 1900,
     //gotoTimeout: 300000,
     webPreferences: {

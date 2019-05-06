@@ -144,8 +144,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
       }
 
       if(totalPoin > 8500) {
-       // console.log("total poin:", totalPoin);
-       // console.log('poin tercapai. selanjutnya silahkan input manual')
+        console.log("total poin:", totalPoin, 'poin tercapai. selanjutnya silahkan input manual')
         break
       } else {
         let tglSearch = moment(`${tgl} ${bln}`, 'DD MMMM YYYY').format('DD/MM/YYYY')
@@ -213,6 +212,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
         }
 
         if (jmlInp > 0) {
+          await ekin.insert('#KUANTITAS')
           await ekin.insert('#KUANTITAS', jmlInp)
           console.log("diinput:", jmlInp);
         }
@@ -303,12 +303,15 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
     for (let rencThn of dataRencanaThn) {
       let kuantitasBln = Math.ceil(rencThn.text[3] / 12).toFixed()
       let rencExist = dataRencanaBln.filter(rencBln => {
-        let rencBlnArr = rencBln.act.split('\n').filter(e=>e!=='').map(e=>e.split('\',').join('').split('\'').join('').trim())
-        //console.log(rencBlnArr)
-        if(rencBlnArr[1] === rencThn.bln){
-          //console.log(rencBln)
-          //console.log(rencThn.bln)
-          return true
+        if(rencBln.act) {
+          let rencBlnArr = rencBln.act.split('\n').filter(e => e !== '').map(e => e.split('\',').join('').split('\'').join('').trim())
+          //console.log(rencBlnArr)
+          if (rencBlnArr[1] === rencThn.bln) {
+            //console.log(rencBln)
+            //console.log(rencThn.bln)
+            return true
+          }
+
         }
         return false
       })
@@ -331,7 +334,7 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
           }
           console.log(rencExist[0].jml)
         }
-        await ekin.insert("#KUANTITAS", '');
+        await ekin.insert("#KUANTITAS");
         await ekin.insert("#KUANTITAS", kuantitasBln)
         await ekin.wait(500);
         let res = await ekin.evaluate(saveInputBulanan);

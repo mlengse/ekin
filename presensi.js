@@ -108,41 +108,51 @@ const searchTglAndNIP = async( presensi, tgl, bln, list) => {
           console.log(JSON.parse(list.ranap));
           console.log('kd absen', kdAbsen)
           await presensi.select('#kd_absen', 'DL')
-
-        } else {
           if (Number(telat) > 15) {
             console.log("telat", telat);
 
-            console.log('jam wajib masuk', jamWajib)
-            let jamInp = moment(jamWajib, 'HH:mm').add(Math.floor(Math.random() * 15), 'minute').format('HH:mm')
-            console.log('jam inp', jamInp)
+            console.log("jam wajib masuk", jamWajib);
+            let jamInp = moment(jamWajib, "HH:mm")
+              .add(Math.floor(Math.random() * 15), "minute")
+              .format("HH:mm");
+            console.log("jam inp", jamInp);
 
             await presensi.evaluate(jamInp => {
-              document.getElementById('jam_masuk').setAttribute('readonly', false)
-              $('#jam_masuk').val(jamInp)
-            }, jamInp)
+              document
+                .getElementById("jam_masuk")
+                .setAttribute("readonly", false);
+              $("#jam_masuk").val(jamInp);
+            }, jamInp);
           }
 
           if (Number(bolos) > 15) {
-            console.log('bolos', bolos);
-            console.log('jam wajib keluar', jamKeluar)
-            let jamInpKel = moment(jamKeluar, 'HH:mm').subtract(Math.floor(Math.random() * 15), 'minute').format('HH:mm')
-            console.log('jam inp kel', jamInpKel)
+            console.log("bolos", bolos);
+            console.log("jam wajib keluar", jamKeluar);
+            let jamInpKel = moment(jamKeluar, "HH:mm")
+              .subtract(Math.floor(Math.random() * 15), "minute")
+              .format("HH:mm");
+            console.log("jam inp kel", jamInpKel);
             await presensi.evaluate(jamInpKel => {
-              document.getElementById('jam_keluar').setAttribute('readonly', false)
-              $('#jam_keluar').val(jamInpKel)
-            }, jamInpKel)
+              document
+                .getElementById("jam_keluar")
+                .setAttribute("readonly", false);
+              $("#jam_keluar").val(jamInpKel);
+            }, jamInpKel);
+          }
+          await presensi.click("#form_d_absensi > div > button:nth-child(1)")
+
+          while (typeof mesg !== 'string') {
+            await presensi.wait(1)
           }
 
+          console.log(mesg)
+
+        } else {
+
+          // untuk non ranap
+
         }
 
-        await presensi.click("#form_d_absensi > div > button:nth-child(1)")
-
-        while (typeof mesg !== 'string') {
-          await presensi.wait(1)
-        }
-
-        console.log(mesg)
 
       }
       
