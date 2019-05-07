@@ -123,7 +123,29 @@ const approving = async (username, bln) => {
 
 const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => {
   try {
-    let tglNum = Number(tgl)
+    let bbln = Number(moment(tgl, 'DD MM YYYY').format('M'))
+    let ttgl = moment(tgl, 'DD MM YYYY').format('D')
+    let tglNum = Number(ttgl)
+    //console.log(bbln)
+    //console.log(ttgl)
+    //console.log(tgl)
+    let bln = await ekin
+      .click('#TGL_REALISASI > div.input-group.bfh-datepicker-toggle > span')
+      .wait('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th > a.previous')
+      .wait('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th.month > span')
+      .evaluate(() => document.querySelector('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th.month > span').textContent)
+    while ( Number(moment(bln, 'MMMM').format('M')) !== bbln){
+      if (Number(moment(bln, 'MMMM').format('M')) > bbln){
+        await ekin.click('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th > a.previous')
+        bln = await ekin.evaluate(() => document.querySelector('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th.month > span').textContent)
+        //bbln++
+      }
+      if (Number(moment(bln, 'MMMM').format('M')) < bbln) {
+        await ekin.click('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th > a.next')
+        bln = await ekin.evaluate(() => document.querySelector('#TGL_REALISASI > div.bfh-datepicker-calendar > table > thead > tr > th.month > span').textContent)
+        //bbln--
+      }
+    }
     await ekin
       .click('#TGL_REALISASI > div.input-group.bfh-datepicker-toggle > span')
       .wait('#TGL_REALISASI > div.bfh-datepicker-calendar > table > tbody td[data-day="' + tglNum + '"]')
@@ -131,7 +153,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
 
     for (let { act, bln, keg, jml } of dataKeg) {
 
-      await ekin.wait('#TOTAL_POIN')
+      await ekin/*.wait(2000)*/.wait('#TOTAL_POIN')
       let totalPoin
       while(totalPoin === undefined || totalPoin === null || totalPoin === false) {
         totalPoin = await ekin.evaluate(() => document.getElementById('TOTAL_POIN').textContent)
@@ -147,18 +169,23 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
         console.log("total poin:", totalPoin, 'poin tercapai. selanjutnya silahkan input manual')
         break
       } else {
-        let tglSearch = moment(`${tgl} ${bln}`, 'DD MMMM YYYY').format('DD/MM/YYYY')
+        let tglSearch = moment(`${ttgl} ${bbln}`, 'D M').format('DD/MM/YYYY')
         let tglKeg = `${tglSearch} ${keg}`
 
-        let searchArr = tglKeg.split('')
-        let last = searchArr.pop()
-        let search = searchArr.join('')
+        console.log(tglKeg)
+
+        //let searchArr = tglKeg.split('')
+        //let last = searchArr.pop()
+        //let search = searchArr.join('')
 
         let tableRealisasiKeg = await ekin
+          .wait(1000)
           .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
           .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
-          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
-          .type('#tabel_d_realisasi_kegiatan_filter > label > input', last)
+          //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
+          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
+          .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+          .wait(1000)
           .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
 
 
