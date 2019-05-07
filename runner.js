@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 require('dotenv').config()
 const moment = require('moment')
 const lists = require('./ekinList')
@@ -96,3 +97,7 @@ const getTgl = async (num) => {
     console.log(err)
   }
 })()
+=======
+const all = require('./all')
+all()
+>>>>>>> 6c11dff119e8b6f98adad2e4e02571f8a3004814
