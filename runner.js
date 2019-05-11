@@ -52,15 +52,16 @@ const getTgl = async (num) => {
       for(let list of await lists()) {
         console.log(list.NIP)
         console.log(list.Nama)
+        //console.log(list.ranap)
+        let ranap = list.ranap === 'true' ? true : false
 
         let username = list.NIP
         let password = list.NIP
 
         const { tglList, tglLength, bln, blnNum } = await getTgl(a)
-
+        
         let [{ presensi }, { ekin }] = await Promise.all([
-          // loginPresensi(),
-          () => null,
+          ranap ? loginPresensi() : ({ presensi: null}),
           ekinInputBulanan(bln, blnNum, username, password)
         ])
 
@@ -72,21 +73,24 @@ const getTgl = async (num) => {
           console.log(dataKeg.length);
           for (let tgl of tglList/*tglPresensi*/) {
             //console.log(tgl)
-
-            await Promise.all([
-              //   searchTglAndNIP(presensi, tgl, bln, list),
-              ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
-            ])
+            if(presensi){
+              await searchTglAndNIP(presensi, tgl, bln, list)
+            }
+            await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
           }
         }
 
-        await Promise.all([
-          ekin.end(),
-          //presensi.end()
-        ])
+        if(presensi) {
+          await presensi.end()
+        }
 
-        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
-        await approving(username, blnOnly)
+        await ekin.end()
+
+        console.log(Number(tglList[tglList.length - 1].split(' ')[0]))
+        if (Number(tglList[tglList.length - 1].split(' ')[0]) > 26) {
+          let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+          await approving(username, blnOnly)
+        }
 
       }
 

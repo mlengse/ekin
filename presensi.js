@@ -23,7 +23,6 @@ const loginPresensi = async () => {
       drop = await presensi.exists('#drop2')
     }
 
-
     return { presensi }
 
   }catch(err) {
@@ -66,7 +65,7 @@ const searchTglAndNIP = async( presensi, tgl, bln, list) => {
     let jm = moment().format("HH:mm");
     let jk = await presensi.evaluate(() => $('#jam_keluar').val().trim())
     let time = 0
-    while (jamMasuk === jm && jamMasuk === jk && time < 5000) {
+    while (jamMasuk === jm && jamMasuk === jk && time < 500) {
       time++
       jamMasuk = await presensi.evaluate(() => $('#jam_masuk').val().trim())
       jk = await presensi.evaluate(() => $('#jam_keluar').val().trim())
@@ -77,30 +76,40 @@ const searchTglAndNIP = async( presensi, tgl, bln, list) => {
       kdAbsen = await presensi.evaluate(() => $('#kd_absen').val())
     }
 
+    console.log(kdAbsen)
+
 
     mesg = false
     if (!['C', 'DL', 'I'].filter(e => kdAbsen === e).length) {
       let telat = await presensi.evaluate(() => $("#telat").val());
 
-      while(!telat){
+      let tt = 0
+
+      while(!telat && tt < 50){
+        tt++
         telat = await presensi.evaluate(() => $("#telat").val());
       }
 
-
       let bolos = await presensi.evaluate(() => $('#bolos').val())
-
-      while(!bolos){
+      
+      let tb = 0
+      while(!bolos && tb < 50){
+        tb++
         bolos = await presensi.evaluate(() => $('#bolos').val())
       }
 
       if(Number(telat) > 15 || Number(bolos) > 15) {
         let jamWajib = await presensi.evaluate(() => $('#jam_wajib_masuk').val().trim())
-        while (!jamWajib) {
+        let tjw = 0
+        while (!jamWajib && tjw < 50) {
+          tjw++
           jamWajib = await presensi.evaluate(() => $('#jam_wajib_masuk').val().trim())
         }
 
         let jamKeluar = await presensi.evaluate(() => $('#jam_wajib_keluar').val().trim())
-        while (!jamKeluar) {
+        let tjk = 0
+        while (!jamKeluar && tjk < 50) {
+          tjk++
           jamKeluar = await presensi.evaluate(() => $('#jam_wajib_keluar').val().trim())
         }
 
@@ -157,6 +166,8 @@ const searchTglAndNIP = async( presensi, tgl, bln, list) => {
       }
       
     }
+
+    console.log(mesg)
 
     return mesg
 

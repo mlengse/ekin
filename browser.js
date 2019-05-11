@@ -1,3 +1,10 @@
+const hapusRealisasiKegiatan = () => {
+  window.confirm = function (_, __) {
+    return true
+  }
+  hapus()
+}
+
 const saveRealisasiKegiatan = () => {
   window.alert = (_) => true
   KD_KEGIATAN_BULAN1 = $('#KD_KEGIATAN_BULAN').val();
@@ -125,6 +132,7 @@ const tableKegEval = (tableId) => {
     keg.bln = keg.text[0]
     keg.keg = keg.text[1]
     keg.jml = keg.text[2]
+    keg.stat = keg.text[4]
     if(keg.act && keg.act.includes('kegiatan_tahun')){
       keg.jml = keg.text[4]
     }
@@ -136,6 +144,7 @@ const tableKegEval = (tableId) => {
 module.exports = {
   tableKegEval,
   saveRealisasiKegiatan,
+  hapusRealisasiKegiatan,
   buatKodeRealisasiKeg,
   saveInputBulanan,
   buatKodeInputBln

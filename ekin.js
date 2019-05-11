@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { getEkin } = require('./nmrunner')
 const moment = require('moment')
-const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan, buatKodeRealisasiKeg } = require('./browser')
+const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan, hapusRealisasiKegiatan, buatKodeRealisasiKeg } = require('./browser')
 const url = process.env.EKIN_URL
 //const username = process.env.EKIN_USERNAME
 //const password = process.env.EKIN_PASSWORD
@@ -224,34 +224,56 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
         }
 
         if( tableRealisasiKeg.length && tableRealisasiKeg[0].act) {
-          //console.log('sudah diinput')
-          await ekin.evaluate((act) => eval(act), tableRealisasiKeg[0].act)
+          console.log('sudah diinput')
+          if (tableRealisasiKeg.length > 1) {
+            //hapus double entry
+            for (let i = 0; i < tableRealisasiKeg.length; i++) {
+              const realKeg = tableRealisasiKeg[i];
+              //console.log(realKeg)
+              if ( i > 0 && realKeg.stat !== 'Disetujui') {
+                await ekin.evaluate((act) => eval(act), realKeg.act)
+                await ekin.evaluate(hapusRealisasiKegiatan)
+                console.log('hapus double entry')
+              }
+            }
+          }
+            /**
+            tableRealisasiKeg = await ekin
+              .wait(1000)
+              .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
+              .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+              //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
+              .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
+              .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+              .wait(1000)
+              .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
+             */
         } else {
           if(jmlInp > 0 ){
             await ekin.evaluate(buatKodeRealisasiKeg, act)
           }
+          if (kdAktivitas) {
+            await ekin.type('#KD_AKTIVITAS', kdAktivitas)
+            await ekin.type("#NM_KEGIATAN", '');
+            await ekin.insert('#NM_KEGIATAN', keg)
+          }
+
+          if (jmlInp > 0) {
+            await ekin.insert('#KUANTITAS')
+            await ekin.insert('#KUANTITAS', jmlInp)
+            console.log("diinput:", jmlInp);
+          }
+
+          if ((tableRealisasiKeg.length && tableRealisasiKeg[0].act) || (jmlInp > 0 && kdAktivitas)) {
+            await ekin.click('#JAM_MULAI')
+              .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+              .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+            let res = await ekin.evaluate(saveRealisasiKegiatan)
+            console.log(res)
+            console.log('total poin:', totalPoin);
+          }
         }
 
-        if (kdAktivitas) {
-          await ekin.type('#KD_AKTIVITAS', kdAktivitas)
-          await ekin.type("#NM_KEGIATAN", '');
-          await ekin.insert('#NM_KEGIATAN', keg)
-        }
-
-        if (jmlInp > 0) {
-          await ekin.insert('#KUANTITAS')
-          await ekin.insert('#KUANTITAS', jmlInp)
-          console.log("diinput:", jmlInp);
-        }
-
-        if( (tableRealisasiKeg.length && tableRealisasiKeg[0].act) || (jmlInp > 0 && kdAktivitas) ) {
-          await ekin.click('#JAM_MULAI')
-            .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-            .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-          let res = await ekin.evaluate(saveRealisasiKegiatan)
-          console.log(res)
-          console.log('total poin:', totalPoin);
-        }
 
       } 
     }
