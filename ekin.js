@@ -141,6 +141,7 @@ const approving = async (ekin, username, bln) => {
           .evaluate(act => eval(act), act)
           .wait(1000)
           .evaluate(() => simpan())
+          .wait(1000)
       }
   
     }
