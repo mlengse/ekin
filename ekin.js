@@ -5,6 +5,10 @@ const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan,
 const url = process.env.EKIN_URL
 const usernameBos = process.env.EKIN_USERNAME_BOS
 const passwordBos = process.env.EKIN_PASSWORD_BOS
+const usernameKA = process.env.EKIN_USERNAME_KA
+const passwordKA = process.env.EKIN_PASSWORD_KA
+const usernameTU = process.env.EKIN_USERNAME_TU
+const passwordTU = process.env.EKIN_PASSWORD_TU
 const loginButton = process.env.LOGIN_BUTTON
 const rencanaBulanan = process.env.RENCANA_BULANAN_SELECTOR
 const rencanaBulananUrl = process.env.RENCANA_BULANAN_URL
@@ -71,6 +75,27 @@ const ekinLogin = async (user, passw) => {
 const ekinLoginKepala = async () => {
   try {
     let { ekin } = await ekinLogin(usernameBos, passwordBos)
+    return { ekin }
+  } catch (err) {
+    console.log(err)
+  }
+
+}
+
+
+const ekinLoginKA = async () => {
+  try {
+    let { ekin } = await ekinLogin(usernameKA, passwordKA)
+    return { ekin }
+  } catch (err) {
+    console.log(err)
+  }
+
+}
+
+const ekinLoginTU = async () => {
+  try {
+    let { ekin } = await ekinLogin(usernameTU, passwordTU)
     return { ekin }
   } catch (err) {
     console.log(err)
@@ -158,129 +183,134 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
 
     for (let { act, bln, keg, jml } of dataKeg) {
 
-      await ekin/*.wait(2000)*/.wait('#TOTAL_POIN')
-      let totalPoin
-      while(totalPoin === undefined || totalPoin === null || totalPoin === false) {
-        totalPoin = await ekin.evaluate(() => document.getElementById('TOTAL_POIN').textContent)
-        totalPoin = totalPoin.split(":")[1]
-        if(totalPoin){
-          totalPoin = Number(totalPoin.split(' ')[1])
+      if( !keg.includes('inap')) {
+        await ekin/*.wait(2000)*/.wait('#TOTAL_POIN')
+        let totalPoin
+        while(totalPoin === undefined || totalPoin === null || totalPoin === false) {
+          totalPoin = await ekin.evaluate(() => document.getElementById('TOTAL_POIN').textContent)
+          totalPoin = totalPoin.split(":")[1]
+          if(totalPoin){
+            totalPoin = Number(totalPoin.split(' ')[1])
+          } else {
+            totalPoin = false
+          }
+        }
+  
+        if(totalPoin > 8500) {
+          console.log("total poin:", totalPoin, 'poin tercapai. selanjutnya silahkan input manual')
+          break
         } else {
-          totalPoin = false
-        }
-      }
-
-      if(totalPoin > 8500) {
-        console.log("total poin:", totalPoin, 'poin tercapai. selanjutnya silahkan input manual')
-        break
-      } else {
-        let tglSearch = moment(`${ttgl} ${bbln}`, 'D M').format('DD/MM/YYYY')
-        let tglKeg = `${tglSearch} ${keg}`
-
-        console.log(tglKeg)
-
-        //let searchArr = tglKeg.split('')
-        //let last = searchArr.pop()
-        //let search = searchArr.join('')
-
-        let tableRealisasiKeg = await ekin
-          .wait(1000)
-          .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
-          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
-          //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
-          .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
-          .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
-          .wait(1000)
-          .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
-
-
-        let jmlInp = 0
-        if (jml > 1) {
-          jmlInp = Math.ceil(jml / tglLength).toFixed()
-          console.log('jml', jml)
-          console.log('tgl length', tglLength)
-          console.log('jml inp', jmlInp)
-        }
-
-        let kdAktivitas
-        if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Mencatat'
-        } else if (['pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Memeriksa'
-        } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Mengkoordinasikan'
-        } else if (['Menyiapkan bahan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Menyiapkan data/dokumen/laporan'
-        } else if (['rencana'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Merencanakan'
-        } else if (['menyusun instrumen'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Menyusun data/bahan'
-        } else if (['umpulkan data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Mengumpulkan Bahan/Data'
-        } else if (['mengolah data', 'analisis data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Mengolah Data'
-        } else if (['membuat rancangan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Membuat Rancangan'
-        } else if (['mengajar', 'melatih', 'memberikan pelatihan', 'advokasi', 'penyuluhan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-          kdAktivitas = 'Membimbing'
-        } else {
-          console.log(keg)
-          console.log('kode aktivitas belum ditentukan')
-        }
-
-        if( tableRealisasiKeg.length && tableRealisasiKeg[0].act) {
-          console.log('sudah diinput')
-          if (tableRealisasiKeg.length > 1) {
-            //hapus double entry
-            for (let i = 0; i < tableRealisasiKeg.length; i++) {
-              const realKeg = tableRealisasiKeg[i];
-              //console.log(realKeg)
-              if ( i > 0 && realKeg.stat !== 'Disetujui') {
-                await ekin.evaluate((act) => eval(act), realKeg.act)
-                await ekin.evaluate(hapusRealisasiKegiatan)
-                console.log('hapus double entry')
+          let tglSearch = moment(`${ttgl} ${bbln}`, 'D M').format('DD/MM/YYYY')
+          let tglKeg = `${tglSearch} ${keg}`
+  
+          console.log(tglKeg)
+  
+          //let searchArr = tglKeg.split('')
+          //let last = searchArr.pop()
+          //let search = searchArr.join('')
+  
+          let tableRealisasiKeg = await ekin
+            .wait(1000)
+            .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
+            .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+            //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
+            .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
+            .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+            .wait(1000)
+            .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
+  
+  
+          let jmlInp = 0
+          if (jml > 1) {
+            jmlInp = Math.ceil(jml / tglLength).toFixed()
+            console.log('jml', jml)
+            console.log('tgl length', tglLength)
+            console.log('jml inp', jmlInp)
+          }
+  
+          let kdAktivitas
+          if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Mencatat'
+          } else if (['pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Memeriksa'
+          } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Mengkoordinasikan'
+          } else if (['Menyiapkan bahan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Menyiapkan data/dokumen/laporan'
+          } else if (['rencana'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Merencanakan'
+          } else if (['menyusun instrumen'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Menyusun data/bahan'
+          } else if (['umpulkan data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Mengumpulkan Bahan/Data'
+          } else if (['mengolah data', 'analisis data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Mengolah Data'
+          } else if (['membuat rancangan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Membuat Rancangan'
+          } else if (['mengajar', 'melatih', 'memberikan pelatihan', 'advokasi', 'penyuluhan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+            kdAktivitas = 'Membimbing'
+          } else {
+            console.log(keg)
+            console.log('kode aktivitas belum ditentukan')
+          }
+  
+          if( tableRealisasiKeg.length && tableRealisasiKeg[0].act) {
+            console.log('sudah diinput')
+            if (tableRealisasiKeg.length > 1) {
+              //hapus double entry
+              for (let i = 0; i < tableRealisasiKeg.length; i++) {
+                const realKeg = tableRealisasiKeg[i];
+                //console.log(realKeg)
+                if ( i > 0 && realKeg.stat !== 'Disetujui') {
+                  await ekin.evaluate((act) => eval(act), realKeg.act)
+                  await ekin.evaluate(hapusRealisasiKegiatan)
+                  console.log('hapus double entry')
+                }
               }
             }
+              /**
+              tableRealisasiKeg = await ekin
+                .wait(1000)
+                .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
+                .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+                //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
+                .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
+                .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
+                .wait(1000)
+                .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
+               */
+          } else {
+            if(jmlInp > 0 ){
+              await ekin.evaluate(buatKodeRealisasiKeg, act)
+            }
+            if (kdAktivitas) {
+              await ekin.type('#KD_AKTIVITAS', kdAktivitas)
+              await ekin.type("#NM_KEGIATAN", '');
+              await ekin.insert('#NM_KEGIATAN', keg)
+            }
+  
+            if (jmlInp > 0) {
+              await ekin.insert('#KUANTITAS')
+              await ekin.insert('#KUANTITAS', jmlInp)
+              console.log("diinput:", jmlInp);
+            }
+  
+            if ((tableRealisasiKeg.length && tableRealisasiKeg[0].act) || (jmlInp > 0 && kdAktivitas)) {
+              await ekin.click('#JAM_MULAI')
+                .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+                .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
+              let res = await ekin.evaluate(saveRealisasiKegiatan)
+              console.log(res)
+              console.log('total poin:', totalPoin);
+            }
           }
-            /**
-            tableRealisasiKeg = await ekin
-              .wait(1000)
-              .select('#tabel_d_realisasi_kegiatan_length > label > select', '100')
-              .insert('#tabel_d_realisasi_kegiatan_filter > label > input', '')
-              //.insert('#tabel_d_realisasi_kegiatan_filter > label > input', search)
-              .insert('#tabel_d_realisasi_kegiatan_filter > label > input', tglKeg)
-              .type('#tabel_d_realisasi_kegiatan_filter > label > input', '')
-              .wait(1000)
-              .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
-             */
-        } else {
-          if(jmlInp > 0 ){
-            await ekin.evaluate(buatKodeRealisasiKeg, act)
-          }
-          if (kdAktivitas) {
-            await ekin.type('#KD_AKTIVITAS', kdAktivitas)
-            await ekin.type("#NM_KEGIATAN", '');
-            await ekin.insert('#NM_KEGIATAN', keg)
-          }
+  
+  
+        } 
+          
+      }
+      
 
-          if (jmlInp > 0) {
-            await ekin.insert('#KUANTITAS')
-            await ekin.insert('#KUANTITAS', jmlInp)
-            console.log("diinput:", jmlInp);
-          }
-
-          if ((tableRealisasiKeg.length && tableRealisasiKeg[0].act) || (jmlInp > 0 && kdAktivitas)) {
-            await ekin.click('#JAM_MULAI')
-              .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-              .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-            let res = await ekin.evaluate(saveRealisasiKegiatan)
-            console.log(res)
-            console.log('total poin:', totalPoin);
-          }
-        }
-
-
-      } 
     }
     
   } catch (err) {
@@ -413,6 +443,8 @@ module.exports = {
   ekinLogin,
   ekinGetDataKeg,
   ekinLoginKepala,
+  ekinLoginKA,
+  ekinLoginTU,
   approving,
   ekinInputRealisasiKegiatan
 }

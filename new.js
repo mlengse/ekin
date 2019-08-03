@@ -1,9 +1,20 @@
 require('dotenv').config()
 const moment = require('moment')
-const lists = require('./ekinList')
+const jftlists = require('./ekinList')
+const jfulists = require('./jfulist')
+
+const usernameKA = process.env.EKIN_USERNAME_KA
+const passwordKA = process.env.EKIN_PASSWORD_KA
+
 const { 
-  ekinLoginKepala,
-  approving } = require('./ekin')
+  ekinInputBulanan, 
+  ekinGetDataKeg, 
+  ekinInputRealisasiKegiatan, 
+  //ekinLoginKepala,
+  ekinLoginKA,
+  ekinLoginTU,
+  approving 
+} = require('./ekin')
 moment.locale('id')
 
 const getTgl = async (num) => {
@@ -42,31 +53,61 @@ const getTgl = async (num) => {
   }
 }
 
-; (async () => {
+; 
+
+module.exports = async () => {
   try {
 
-    for (a of [ 0/*, -1, -2, -3, -4*/]) {
-      for(let list of await lists()) {
+    for (a of [ 0, /*-1, -2, -3, -4*/]) {
+
+      const { tglList, tglLength, bln, blnNum } = await getTgl(a)
+
+      let instance = await ekinInputBulanan(bln, blnNum, usernameKA, passwordKA)
+
+      if (tglList.length) {
+        const { dataKeg } = await ekinGetDataKeg( { ekin: instance.ekin } );
+        console.log(dataKeg.length);
+        for (let tgl of tglList) {
+          await ekinInputRealisasiKegiatan({ ekin: instance.ekin, tgl, tglLength, dataKeg })
+        }
+      }
+
+      await instance.ekin.end()
+
+      for(let list of await jfulists()) {
         console.log(list.NIP)
 
         let username = list.NIP
 
-        const { bln } = await getTgl(a)
+        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
 
-          let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+        let { ekin } = await ekinLoginTU()
 
-          let { ekin } = await ekinLoginKepala()
+        console.log(blnOnly)
 
-          console.log(blnOnly)
-
-          await approving(ekin, username, blnOnly)
-          await ekin.end()
+        await approving(ekin, username, blnOnly)
+        await ekin.end()
 
       }
 
+      for(let list of await jftlists()) {
+        console.log(list.NIP)
+
+        let username = list.NIP
+
+        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+
+        let { ekin } = await ekinLoginKA()
+
+        console.log(blnOnly)
+
+        await approving(ekin, username, blnOnly)
+        await ekin.end()
+
+      }
 
     }
   } catch (err) {
     console.log(err)
   }
-})()
+}
