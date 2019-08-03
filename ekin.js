@@ -3,8 +3,6 @@ const { getEkin } = require('./nmrunner')
 const moment = require('moment')
 const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan, hapusRealisasiKegiatan, buatKodeRealisasiKeg } = require('./browser')
 const url = process.env.EKIN_URL
-//const username = process.env.EKIN_USERNAME
-//const password = process.env.EKIN_PASSWORD
 const usernameBos = process.env.EKIN_USERNAME_BOS
 const passwordBos = process.env.EKIN_PASSWORD_BOS
 const loginButton = process.env.LOGIN_BUTTON
@@ -80,40 +78,47 @@ const ekinLoginKepala = async () => {
 
 }
 
-const approving = async (username, bln) => {
+
+const approving = async (ekin, username, bln) => {
   try {
-    const { ekin } = await ekinLoginKepala()
-    await ekin
-      .goto(`${url}d_approve_realisasi_kegiatan`)
+    let links = ['d_approve_realisasi_kegiatan', 'd_approve_kegiatan_tambahan']
+    for(link of links) {
+      console.log(link)
+      await ekin
+      .goto(`${url}${link}`)
       .wait('#tabel_bawahan')
       .evaluate((username) => klik_data_pegawai_bawahan(username), username)
 
-    let nip = ''
-    while (nip !== username) {
-      nip = await ekin.evaluate(() => document.getElementById('nip_pegawai').textContent)
+      let nip = ''
+      while (nip !== username) {
+        nip = await ekin.evaluate(() => document.getElementById('nip_pegawai').textContent)
+      }
+      await ekin.wait(5000)
+      let acts = await ekin
+        .type(`#tabel_${link}_filter > label > input`, 'Belum ' + bln.toUpperCase())
+        .select(`#tabel_${link}_length > label > select`, '100')
+        .evaluate(link => {
+          let table = document.getElementById(`tabel_${link}`)
+          let rows = table.querySelectorAll('tr')
+          let acts = []
+          for (row of rows) {
+            let act = row.getAttribute('ondblclick')
+            if(act){
+              acts.push(act)
+            }
+          }
+          return acts
+        }, link)
+      for (act of acts) {
+        act = act.split('\n').map(e=>e.trim()).join('')
+        console.log(act)
+        await ekin
+          .evaluate(act => eval(act), act)
+          .wait(1000)
+          .evaluate(() => simpan())
+      }
+  
     }
-    await ekin.wait(1000)
-    let acts = await ekin
-      .select('#tabel_d_approve_realisasi_kegiatan_length > label > select', '100')
-      .insert('#tabel_d_approve_realisasi_kegiatan_filter > label > input', 'Belum ' + bln)
-      //.wait(100)
-      .evaluate(() => {
-        let table = document.getElementById('tabel_d_approve_realisasi_kegiatan')
-        let rows = table.querySelectorAll('tr')
-        let acts = []
-        for (row of rows) {
-          let act = row.getAttribute('ondblclick')
-          acts.push(act)
-        }
-        return acts
-      })
-    for (act of acts) {
-      await ekin
-        .evaluate(act => eval(act), act)
-        .wait(1000)
-        .evaluate(() => simpan())
-    }
-    await ekin.end()
     //return { ekin }
   } catch (err) {
     console.log(err)

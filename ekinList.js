@@ -5,7 +5,7 @@ const fs = require('fs');
 module.exports = async () => {
   let lists = []
 
-  await new Promise( resolve => fs.createReadStream('./nip.csv')
+  await new Promise( resolve => fs.createReadStream('./e.csv')
     .pipe(csv({ separator: ';'}))
     .on('data', (row) => {
       //console.log(row);
