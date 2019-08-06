@@ -118,24 +118,53 @@ const approving = async (ekin, username, bln) => {
       while (nip !== username) {
         nip = await ekin.evaluate(() => document.getElementById('nip_pegawai').textContent)
       }
-      await ekin.wait(5000)
-      let acts = await ekin
-        .type(`#tabel_${link}_filter > label > input`, 'Belum ' + bln.toUpperCase())
-        .select(`#tabel_${link}_length > label > select`, '100')
-        .evaluate(link => {
-          let table = document.getElementById(`tabel_${link}`)
-          let rows = table.querySelectorAll('tr')
-          let acts = []
-          for (row of rows) {
-            let act = row.getAttribute('ondblclick')
-            if(act){
-              acts.push(act)
+
+      let acts = []
+
+      let start = new Date()
+      let end = new Date()
+
+      while(!acts.length && end - start < 10000){
+        //await ekin.wait(5000)
+        acts = await ekin
+          .evaluate(link => {
+            let table = document.getElementById(`tabel_${link}`)
+            let rows = table.querySelectorAll('tr')
+            let acts = []
+            for (row of rows) {
+              let act = row.getAttribute('ondblclick')
+              if(act){
+                act = act.split('\n').map(e=>e.trim()).join('')
+                acts.push(act)
+              }
             }
+            return acts
+          }, link)
+        end = new Date()
+        //console.log(acts)
+      }
+
+      console.log('execution time:', end-start, 'ms')
+
+      acts = await ekin
+      .type(`#tabel_${link}_filter > label > input`, 'Belum ' + bln.toUpperCase())
+      .select(`#tabel_${link}_length > label > select`, '100')
+      .evaluate(link => {
+        let table = document.getElementById(`tabel_${link}`)
+        let rows = table.querySelectorAll('tr')
+        let acts = []
+        for (row of rows) {
+          let act = row.getAttribute('ondblclick')
+          if(act){
+            act = act.split('\n').map(e=>e.trim()).join('')
+            acts.push(act)
           }
-          return acts
-        }, link)
+        }
+        return acts
+      }, link)
+
       for (act of acts) {
-        act = act.split('\n').map(e=>e.trim()).join('')
+//        act = act.split('\n').map(e=>e.trim()).join('')
         console.log(act)
         await ekin
           .evaluate(act => eval(act), act)
