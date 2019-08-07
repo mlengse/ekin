@@ -61,7 +61,7 @@ module.exports = async () => {
     for (a of [ 0, /*-1, -2, -3, -4*/]) {
 
       const { tglList, tglLength, bln, blnNum } = await getTgl(a)
-/*
+
       let instance = await ekinInputBulanan(bln, blnNum, usernameKA, passwordKA)
 
       if (tglList.length) {
@@ -73,9 +73,9 @@ module.exports = async () => {
       }
 
       await instance.ekin.end()
-*/
+
       for(let list of await jfulists()) {
-        console.log(list.NIP)
+        console.log(list.NIP, list.nama)
 
         let username = list.NIP
 

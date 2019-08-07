@@ -261,7 +261,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
           let kdAktivitas
           if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
             kdAktivitas = 'Mencatat'
-          } else if (['pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          } else if (['medik', 'konsul', 'pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
             kdAktivitas = 'Memeriksa'
           } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
             kdAktivitas = 'Mengkoordinasikan'
