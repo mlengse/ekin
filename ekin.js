@@ -1,7 +1,15 @@
 require('dotenv').config()
 const { getEkin } = require('./nmrunner')
 const moment = require('moment')
-const { tableKegEval, saveInputBulanan, buatKodeInputBln, saveRealisasiKegiatan, hapusRealisasiKegiatan, buatKodeRealisasiKeg } = require('./browser')
+const { 
+  tableKegEval, 
+  saveInputBulanan, 
+  delInputBulanan,
+  buatKodeInputBln, 
+  saveRealisasiKegiatan, 
+  hapusRealisasiKegiatan, 
+  buatKodeRealisasiKeg 
+} = require('./browser')
 const url = process.env.EKIN_URL
 const usernameBos = process.env.EKIN_USERNAME_BOS
 const passwordBos = process.env.EKIN_PASSWORD_BOS
@@ -124,7 +132,7 @@ const approving = async (ekin, username, bln) => {
       let start = new Date()
       let end = new Date()
 
-      while(!acts.length && end - start < 10000){
+      while(!acts.length && end - start < 100000){
         //await ekin.wait(5000)
         acts = await ekin
           .evaluate(link => {
@@ -145,6 +153,10 @@ const approving = async (ekin, username, bln) => {
       }
 
       console.log('execution time:', end-start, 'ms')
+
+      if(bln.toLowerCase() === 'november') {
+        bln = 'nopember'
+      }
 
       acts = await ekin
       .type(`#tabel_${link}_filter > label > input`, 'Belum ' + bln.toUpperCase())
@@ -206,6 +218,7 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
         //bbln--
       }
     }
+    
     await ekin
       .click('#TGL_REALISASI > div.input-group.bfh-datepicker-toggle > span')
       .wait('#TGL_REALISASI > div.bfh-datepicker-calendar > table > tbody td[data-day="' + tglNum + '"]')
@@ -329,9 +342,16 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
               await ekin.click('#JAM_MULAI')
                 .wait('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
                 .insert('#JAM_MULAI > div.bfh-timepicker-popover > table > tbody > tr > td.hour > div > input')
-              let res = await ekin.evaluate(saveRealisasiKegiatan)
-              console.log(res)
-              console.log('total poin:', totalPoin);
+              let res = {}
+              let time = 0
+              while(!res.msg && time < 10000) {
+                res = await ekin.evaluate(saveRealisasiKegiatan)
+                console.log(res)
+                console.log('total poin:', totalPoin);
+                await ekin.wait(1000)
+
+                time += 1000
+              }
             }
           }
   
@@ -389,6 +409,9 @@ const getBln = async ekin => {
 }
 
 const ekinInputBulanan = async (bln, blnNum, u, p) => {
+  if(bln.toLowerCase() == 'november') {
+    bln = 'nopember'
+  }
   try {
     let { ekin } = await ekinLogin(u,p)
     let dataRencanaThn = await ekin
@@ -404,58 +427,107 @@ const ekinInputBulanan = async (bln, blnNum, u, p) => {
 
     //console.log(blnList.data[0].map(e=> e.NM_BULAN))
 
-    let dataRencanaBln = await ekin
-      .wait('#tabel_d_kegiatan_bulan')
-      .select('#tabel_d_kegiatan_bulan_length > label > select', '100')
-      .insert('#tabel_d_kegiatan_bulan_filter > label > input', bln)
-      .evaluate(tableKegEval, '#tabel_d_kegiatan_bulan')
+    let dataRencanaBln = [{ act: null}]
+    let time = 0
 
+    while( !dataRencanaBln.filter(e => e.act !== null ).length && time < 10000) {
+      dataRencanaBln = await ekin
+        .wait(1000)
+        .select('#tabel_d_kegiatan_bulan_length > label > select', '100')
+        .insert('#tabel_d_kegiatan_bulan_filter > label > input')
+        .insert('#tabel_d_kegiatan_bulan_filter > label > input', bln)
+        .evaluate(tableKegEval, '#tabel_d_kegiatan_bulan')
+
+      time += 1000
+    }
+    
     //console.log(dataRencanaThn)
-    //console.log(dataRencanaBln)
+    // console.log(dataRencanaBln)
 
 
     for (let rencThn of dataRencanaThn) {
-      let kuantitasBln = Math.ceil(rencThn.text[3] / 12).toFixed()
-      let rencExist = dataRencanaBln.filter(rencBln => {
-        if(rencBln.act) {
-          let rencBlnArr = rencBln.act.split('\n').filter(e => e !== '').map(e => e.split('\',').join('').split('\'').join('').trim())
-          //console.log(rencBlnArr)
-          if (rencBlnArr[1] === rencThn.bln) {
-            //console.log(rencBln)
-            //console.log(rencThn.bln)
-            return true
+      if(!JSON.stringify(rencThn).includes('inap')) {
+        // console.log(rencThn)
+        let kuantitasBln = Math.ceil(rencThn.text[3] / 12).toFixed()
+        let rencExist = dataRencanaBln.filter(rencBln => {
+          // console.log(rencBln)
+          if(rencBln.act) {
+            // console.log(rencBln.act)
+            let rencBlnArr = rencBln.act.split('\n').filter(e => e !== '').map(e => e.split('\',').join('').split('\'').join('').trim())
+            //console.log(rencBlnArr)
+            if (rencBlnArr[1] === rencThn.bln) {
+              //console.log(rencBln)
+              //console.log(rencThn.bln)
+              return true
+            }
+  
           }
-
+          return false
+        })
+        await getBln(ekin)
+        if (!rencExist.length){
+          await ekin.evaluate(buatKodeInputBln, rencThn.act)
+          await ekin.evaluate(() => buat_kode_d_kegiatan_bulan())
+          await ekin.select("#KD_BULAN", blnNum)
+          await ekin.insert("#NM_KEGIATAN_BULAN", rencThn.keg)
+        } else {
+          while(rencExist.length > 1) {
+            console.log('hapus duplikasi rencana bulanan')
+            await ekin.evaluate(act=> eval(act), rencExist[0].act )
+            await ekin.evaluate( delInputBulanan )
+            rencExist.shift()
+          }
+  
+          //console.log(rencThn)
+          //console.log(rencExist[0])
+          await ekin.evaluate(act=> eval(act), rencExist[0].act )
         }
-        return false
-      })
-      await getBln(ekin)
-      if (!rencExist.length){
-        await ekin.evaluate(buatKodeInputBln, rencThn.act)
-        await ekin.evaluate(() => buat_kode_d_kegiatan_bulan())
-        await ekin.select("#KD_BULAN", blnNum)
-        await ekin.insert("#NM_KEGIATAN_BULAN", rencThn.keg)
+  
+        if( (!rencExist.length && kuantitasBln > 0) || (rencExist.length && kuantitasBln > Number(rencExist[0].jml))) {
+          console.log(kuantitasBln)
+          if(rencExist.length){
+            if(rencExist[0].jml > 500){
+              await ekin.wait(10000)
+            }
+            console.log(rencExist[0].jml)
+          }
+          await ekin.insert("#KUANTITAS");
+          await ekin.insert("#KUANTITAS", kuantitasBln)
+          await ekin.wait(500);
+          let res = await ekin.evaluate(saveInputBulanan);
+  
+          console.log(res)
+        }
+  
       } else {
+        let rencExist = dataRencanaBln.filter(rencBln => {
+          // console.log(rencBln)
+          if(rencBln.act) {
+            // console.log(rencBln.act)
+            let rencBlnArr = rencBln.act.split('\n').filter(e => e !== '').map(e => e.split('\',').join('').split('\'').join('').trim())
+            //console.log(rencBlnArr)
+            if (rencBlnArr[1] === rencThn.bln) {
+              //console.log(rencBln)
+              //console.log(rencThn.bln)
+              return true
+            }
+  
+          }
+          return false
+        })
+        // await getBln(ekin)
+        while(rencExist.length) {
+          console.log('hapus rencana bulanan ranap')
+          await ekin.evaluate(act=> eval(act), rencExist[0].act )
+          await ekin.evaluate( delInputBulanan )
+          rencExist.shift()
+        }
+
         //console.log(rencThn)
         //console.log(rencExist[0])
-        await ekin.evaluate(act=> eval(act), rencExist[0].act )
-      }
-      if( (!rencExist.length && kuantitasBln > 0) || (rencExist.length && kuantitasBln > Number(rencExist[0].jml))) {
-        console.log(kuantitasBln)
-        if(rencExist.length){
-          if(rencExist[0].jml > 500){
-            await ekin.wait(10000)
-          }
-          console.log(rencExist[0].jml)
-        }
-        await ekin.insert("#KUANTITAS");
-        await ekin.insert("#KUANTITAS", kuantitasBln)
-        await ekin.wait(500);
-        let res = await ekin.evaluate(saveInputBulanan);
+        // await ekin.evaluate(act=> eval(act), rencExist[0].act )
 
-        console.log(res)
       }
-
     }
 
     return {

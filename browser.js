@@ -69,6 +69,34 @@ const buatKodeRealisasiKeg = (act) => {
   buat_kode_d_realisasi_kegiatan()
 }
 
+const delInputBulanan = () => {
+  let KD_KEGIATAN_BULAN1 = $("#KD_KEGIATAN_BULAN").val();
+  window.alert = (_) => true
+  return new Promise ( resolve => {
+    $.ajax({
+      type    : "POST",
+      url     : "http://203.190.116.234/e-kinerja/v1/d_kegiatan_bulan/hapus",
+      data    : {KD_KEGIATAN_BULAN:KD_KEGIATAN_BULAN1},
+      success : function(data){
+        if(data){
+          data = JSON.parse(data);
+          resolve(data)
+          if(data.status){
+            hide_loading();
+            batal();
+            tabel_d_kegiatan_bulan();
+            alert("Data berhasil dihapus");
+          }
+          else{
+            hide_loading();
+            alert('Data gagal dihapus : '+data.error);
+          }
+        }
+      }
+    })
+  })
+}
+
 const saveInputBulanan = () => {
   window.alert = (_) => true
   return new Promise(resolve => {
@@ -177,5 +205,6 @@ module.exports = {
   hapusRealisasiKegiatan,
   buatKodeRealisasiKeg,
   saveInputBulanan,
+  delInputBulanan,
   buatKodeInputBln
 }

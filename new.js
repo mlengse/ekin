@@ -1,7 +1,9 @@
 require('dotenv').config()
 const moment = require('moment')
+const boss = require('./boss')
 const jftlists = require('./ekinList')
-const jfulists = require('./jfulist')
+// const jftlists = require('./ekinList')
+// const jfulists = require('./jfulist')
 
 const usernameKA = process.env.EKIN_USERNAME_KA
 const passwordKA = process.env.EKIN_PASSWORD_KA
@@ -11,8 +13,9 @@ const {
   ekinGetDataKeg, 
   ekinInputRealisasiKegiatan, 
   //ekinLoginKepala,
-  ekinLoginKA,
-  ekinLoginTU,
+  ekinLogin,
+  // ekinLoginKA,
+  // ekinLoginTU,
   approving 
 } = require('./ekin')
 moment.locale('id')
@@ -58,53 +61,86 @@ const getTgl = async (num) => {
 module.exports = async () => {
   try {
 
-    for (a of [ 0, /*-1, -2, -3, -4*/]) {
+    for (a of [ -1, 0/*, -2, -3, -4*/]) {
 
       const { tglList, tglLength, bln, blnNum } = await getTgl(a)
 
-      let instance = await ekinInputBulanan(bln, blnNum, usernameKA, passwordKA)
 
-      if (tglList.length) {
-        const { dataKeg } = await ekinGetDataKeg( { ekin: instance.ekin } );
-        console.log(dataKeg.length);
-        for (let tgl of tglList) {
-          await ekinInputRealisasiKegiatan({ ekin: instance.ekin, tgl, tglLength, dataKeg })
+      // if(a === 0) {
+      //   let instance = await ekinInputBulanan(bln, blnNum, usernameKA, passwordKA)
+
+      //   if (tglList.length && a === 0) {
+      //     const { dataKeg } = await ekinGetDataKeg( { ekin: instance.ekin } );
+      //     console.log(dataKeg.length);
+      //     for (let tgl of tglList) {
+      //       await ekinInputRealisasiKegiatan({ ekin: instance.ekin, tgl, tglLength, dataKeg })
+      //     }
+      //   }
+  
+      //   await instance.ekin.end()
+  
+      // }
+
+      if( a == 0 || (a == -1 && Number(moment().format('DD') < 5 ))) {
+
+        let bosses = await boss()
+
+        for( let b of bosses) {
+          // console.log(b)
+          for(let list of await jftlists(b.nama)) {
+            console.log(list.NIP, list.nama)
+    
+            let username = list.NIP
+    
+            let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+    
+            let { ekin } = await ekinLogin(b.username, b.password)
+            // let { ekin } = await ekinLoginKA()
+    
+            console.log(blnOnly)
+    
+            await approving(ekin, username, blnOnly)
+            await ekin.end()
+    
+          }
+  
         }
+
+
+        // for(let list of await jfulists()) {
+        //   console.log(list.NIP, list.nama)
+  
+        //   let username = list.NIP
+  
+        //   let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+  
+        //   let { ekin } = await ekinLoginTU()
+  
+        //   console.log(blnOnly)
+  
+        //   await approving(ekin, username, blnOnly)
+        //   await ekin.end()
+  
+        // }
+  
+        // for(let list of await jftlists()) {
+        //   console.log(list.NIP, list.nama)
+  
+        //   let username = list.NIP
+  
+        //   let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
+  
+        //   let { ekin } = await ekinLoginKA()
+  
+        //   console.log(blnOnly)
+  
+        //   await approving(ekin, username, blnOnly)
+        //   await ekin.end()
+  
+        // }
+  
       }
 
-      await instance.ekin.end()
-
-      for(let list of await jfulists()) {
-        console.log(list.NIP, list.nama)
-
-        let username = list.NIP
-
-        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
-
-        let { ekin } = await ekinLoginTU()
-
-        console.log(blnOnly)
-
-        await approving(ekin, username, blnOnly)
-        await ekin.end()
-
-      }
-
-      for(let list of await jftlists()) {
-        console.log(list.NIP)
-
-        let username = list.NIP
-
-        let blnOnly = moment(bln, 'MMMM YYYY').format('MMMM')
-
-        let { ekin } = await ekinLoginKA()
-
-        console.log(blnOnly)
-
-        await approving(ekin, username, blnOnly)
-        await ekin.end()
-
-      }
 
     }
   } catch (err) {

@@ -2,10 +2,10 @@ const csv = require('csv-parser');
 const fs = require('fs');
 
 
-module.exports = async () => {
+module.exports = async (name) => {
   let lists = []
 
-  await new Promise( resolve => fs.createReadStream('./jft.csv')
+  await new Promise( resolve => fs.createReadStream(`./${name}.csv`)
     .pipe(csv({ separator: ';'}))
     .on('data', (row) => {
       //console.log(row);

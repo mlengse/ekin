@@ -20,7 +20,7 @@ function getPresensi() {
 
 function getEkin() {
   return new Nightmare({
-    //show: true,
+    show: true,
     width: 1900,
     //gotoTimeout: 300000,
     webPreferences: {
