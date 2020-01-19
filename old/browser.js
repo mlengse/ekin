@@ -97,77 +97,78 @@ const delInputBulanan = () => {
   })
 }
 
-const saveInputBulanan = () => {
-  window.alert = (_) => true
-  return new Promise(resolve => {
-    $.ajax({
-      type: 'POST',
-      url: "http://203.190.116.234/e-kinerja/v1/d_kegiatan_bulan/simpan",
-      data: $("#form_d_kegiatan_bulan").serialize(),
-      success: function (data) {
-        data = JSON.parse(data);
-        if (data.status) {
-          resolve(data)
-          hide_loading();
-          tabel_d_kegiatan_bulan();
-          alert('Berhasil menyimpan data');
-          alert('data berhasil disimpan');
-          batal();
-        }
-        else {
-          resolve(data)
-          hide_loading();
-          alert('Gagal menyimpan data : ' + data.error);
-        }
+// const saveInputBulanan = () => {
+//   window.alert = (_) => true
+//   return new Promise(resolve => {
+//     $.ajax({
+//       type: 'POST',
+//       url: "http://203.190.116.234/e-kinerja/v1/d_kegiatan_bulan/simpan",
+//       data: $("#form_d_kegiatan_bulan").serialize(),
+//       success: function (data) {
+//         data = JSON.parse(data);
+//         if (data.status) {
+//           resolve(data)
+//           hide_loading();
+//           tabel_d_kegiatan_bulan();
+//           alert('Berhasil menyimpan data');
+//           alert('data berhasil disimpan');
+//           batal();
+//         }
+//         else {
+//           resolve(data)
+//           hide_loading();
+//           alert('Gagal menyimpan data : ' + data.error);
+//         }
 
-      },
-      error: function (xhr, textStatus, errorThrown) {
-        resolve(textStatus)
-        hide_loading();
-        alert('Gagal menyimpan data:' + data.error);
-      }
-    });
-  })
-}
+//       },
+//       error: function (xhr, textStatus, errorThrown) {
+//         resolve(textStatus)
+//         hide_loading();
+//         alert('Gagal menyimpan data:' + data.error);
+//       }
+//     });
+//   })
+// }
 
-const buatKodeInputBln = act => {
-  window.confirm = function(_, __) {
-    return true;
-  };
-  let actArr = act.split(`','`)
-  let kode = actArr[0].split(`'`)[1]
-  let desc = actArr[1].split(`'`)[0];
-  klik_data_d_kegiatan_tahun(kode, desc)
-  //eval(act)
-}
+// const buatKodeInputBln = act => {
+//   window.confirm = function(_, __) {
+//     return true;
+//   };
+//   let actArr = act.split(`','`)
+//   let kode = actArr[0].split(`'`)[1]
+//   let desc = actArr[1].split(`'`)[0];
+//   klik_data_d_kegiatan_tahun(kode, desc)
+//   //eval(act)
+// }
 
-const tableKegEval = (tableId) => {
-  let table = document.getElementById(tableId.split('#').join(''))
-  let tableBody = table.querySelectorAll('tbody > tr')
-  let kegList = []
-  for (let row of tableBody) {
-    let keg = {
-      act: row.getAttribute('ondblclick'),
-      text: [],
-      bln: '',
-      keg: '',
-      jml: '',
-    }
-    let tds = row.querySelectorAll('td')
-    for (let col of tds) {
-      keg.text.push(col.textContent.split('\n').join('').split('  ').join(''))
-    }
-    keg.bln = keg.text[0]
-    keg.keg = keg.text[1]
-    keg.jml = keg.text[2]
-    keg.stat = keg.text[4]
-    if(keg.act && keg.act.includes('kegiatan_tahun')){
-      keg.jml = keg.text[4]
-    }
-    kegList.push(keg)
-  }
-  return kegList
-}
+// const tableKegEval = (tableId) => {
+
+//   let table = document.getElementById(tableId.split('#').join(''))
+//   let tableBody = table.querySelectorAll('tbody > tr')
+//   let kegList = []
+//   for (let row of tableBody) {
+//     let keg = {
+//       act: row.getAttribute('ondblclick'),
+//       text: [],
+//       bln: '',
+//       keg: '',
+//       jml: '',
+//     }
+//     let tds = row.querySelectorAll('td')
+//     for (let col of tds) {
+//       keg.text.push(col.textContent.split('\n').join('').split('  ').join(''))
+//     }
+//     keg.bln = keg.text[0]
+//     keg.keg = keg.text[1]
+//     keg.jml = keg.text[2]
+//     keg.stat = keg.text[4]
+//     if(keg.act && keg.act.includes('kegiatan_tahun')){
+//       keg.jml = keg.text[4]
+//     }
+//     kegList.push(keg)
+//   }
+//   return kegList
+// }
 
 const tabelBawahan = () => {
   let table = document.getElementById(tableId.split('#').join(''))

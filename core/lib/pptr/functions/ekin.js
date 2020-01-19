@@ -1,3 +1,71 @@
+exports._inputBln = async ({ that, act, blnNum, kuant }) => {
+  that.spinner.start('input bulanan')
+  let kd = await that.page.evaluate( async (act, blnNum, kuant) => {
+    let data_bulan = JSON.parse(localStorage.getItem("data_bulan"));
+    data_bulan.status ? data_bulan = data_bulan.data : null
+    let opt = ''
+    for( let row of data_bulan) opt += "<option value='"+row.KD_BULAN+"'>"+row.NM_BULAN+"</option>"
+    $("#KD_BULAN").html(opt);
+    const klik_data_d_kegiatan_tahun = (KD_KEGIATAN_TAHUN,NM_KEGIATAN_TAHUN) => {
+      $("#KD_KEGIATAN_TAHUN").val(KD_KEGIATAN_TAHUN);
+      $("#NM_KEGIATAN_TAHUN").val(NM_KEGIATAN_TAHUN);
+      $("#KD_KEGIATAN_BULAN").val('');
+      $("#KD_BULAN").val(blnNum);
+      $("#NM_KEGIATAN_BULAN").val(NM_KEGIATAN_TAHUN);
+      $("#KUANTITAS").val(kuant);
+      $("#BIAYA").val('');
+      $("#KETERANGAN").val('');
+    }
+    window.confirm = (_, __) => true
+    klik_data_d_kegiatan_tahun(...act)
+    let dataKd = await $.ajax({
+      type: "POST",
+      url: "/e-kinerja/v1/d_kegiatan_bulan/buat_kode_d_kegiatan_bulan"
+    })
+    if(dataKd){
+      dataKd = JSON.parse(dataKd);
+      if(dataKd.status) {
+        let kd_kegiatan_bulan = dataKd.data[0].KD_KEGIATAN_BULAN;
+        $("#KD_KEGIATAN_BULAN").val(kd_kegiatan_bulan);
+        let dataSmp = await $.ajax({
+          type: 'POST',
+          url: "/e-kinerja/v1/d_kegiatan_bulan/simpan",
+          data: $("#form_d_kegiatan_bulan").serialize(),
+        })
+        dataSmp = JSON.parse(dataSmp)
+        return { kd_kegiatan_bulan, dataSmp, act, blnNum, kuant }
+      }
+    }
+  }, act, blnNum, kuant)
+  that.spinner.succeed(`${JSON.stringify(kd)}`)
+}
+
+exports._getKegBulan = async ({ that, bln }) => {
+  that.spinner.start('get keg bulan')
+  that.kegBulan = await that.page.evaluate( async bln => {
+    document.querySelector('div').insertAdjacentHTML('afterend', await $.ajax({
+      type: "POST",
+      url: "/e-kinerja/v1/d_kegiatan_bulan/tabel_d_kegiatan_bulan"
+    }))
+    let rows = [...document.getElementById('tabel_d_kegiatan_bulan').querySelectorAll('tr')].map( row => {
+      let tabs = [...row.querySelectorAll('td')]
+      if( !tabs[0]) {
+        return {}
+      }
+      let act = tabs[4].getAttribute('ontouchstart')
+      return {
+        bln: tabs[0].textContent,
+        nmKeg: tabs[1].textContent,
+        tgtKuant: Number(tabs[2].textContent),
+        status: tabs[3].textContent,
+        act: act.slice(act.indexOf('(')+1, act.indexOf(')')).split("'").join('').split(','),
+      }
+    }).filter( e => e.bln && e.bln === bln )
+    return rows
+  }, bln )
+  that.spinner.succeed(`${that.kegBulan.length} kegiatan bulanan`)
+}
+
 exports._getKegTahun = async({ that }) => {
   that.spinner.start(`get keg tahun ${that.kdSKP}`)
   that.kegTahun = await that.page.evaluate(async KD_SKP => {
@@ -13,17 +81,17 @@ exports._getKegTahun = async({ that }) => {
       }
       let act = tabs[6].getAttribute('ontouchstart')
       return {
-        kdKegBln: tabs[0].textContent,
-        nmKegBln: tabs[1].textContent,
+        kdKeg: tabs[0].textContent,
+        nmKeg: tabs[1].textContent,
         tgtKuant: Number(tabs[3].textContent),
         tgtWkt: tabs[4].textContent,
         status: tabs[5].textContent,
         act: act.slice(act.indexOf('(')+1, act.indexOf(')')).split("'").join('').split(','),
       }
-    }).filter( e => e.kdKegBln )
+    }).filter( e => e.kdKeg )
     return rows
   }, that.kdSKP )
-  that.spinner.succeed(`keg thn:\n${that.kegTahun.map(({nmKegBln, tgtKuant}) => `${nmKegBln} (${tgtKuant})`).join('\n')}`)
+  that.spinner.succeed(`${that.kegTahun.length} kegiatan tahunan`)
 }
 
 exports._logout = async ({ that }) => {
@@ -71,7 +139,16 @@ exports._getUserLogin = async ({ that }) => {
   }
 }
 
-exports._getLoginStatus = async ({ that }) => await that.page.evaluate(() => localStorage && localStorage.getItem("status_login"))
+exports._getLoginStatus = async ({ that }) => await that.page.evaluate( async () => {
+  if(localStorage){
+    await $.ajax({
+      type: "POST",
+      url: "/e-kinerja/v1/layout/data_bulan",
+      success: (data) => localStorage.setItem("data_bulan", data)           
+    })
+    return localStorage.getItem("status_login")
+  } 
+})
 
 exports.getParams = obj => Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&')
 

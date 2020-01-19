@@ -14,6 +14,7 @@ module.exports = class Core {
   }
 
   async close(){
+    this.spinner.stop()
     this.browser && await this.browser.close()
   }
 

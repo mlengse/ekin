@@ -6,7 +6,8 @@ exports.users = {}
 exports.getPlan = () => {
   return new Promise( resolve => fs.createReadStream('./db/rencana.csv')
   .pipe(csv({ separator: ','}))
-  .on('data', async (row) => {
+  .on('data', async row => {
+    for(let pr in row) if(!row[pr].length) delete row[pr]
     if(!this.plans[row.no]){
       this.plans[row.no] = row
     } 
