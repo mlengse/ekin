@@ -61,5 +61,6 @@ typings/
 .next
 
 package-lock.json
-nip.csv
 *.csv
+tmp
+db

@@ -17,12 +17,11 @@
   },
   "homepage": "https://github.com/mlengse/ekin#readme",
   "dependencies": {
-    "arangojs": "^6.10.0",
-    "csv-parser": "^2.2.0",
+    "csv-parser": "^2.3.2",
     "dotenv": "^6.2.0",
+    "lowdb": "^1.0.0",
     "moment": "^2.24.0",
-    "nightmare": "^3.0.1",
-    "nightmare-real-mouse": "^1.1.0",
-    "node-cron": "^2.0.3"
+    "ora": "^4.0.3",
+    "puppeteer-core": "^2.0.0"
   }
 }
