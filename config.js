@@ -11,7 +11,12 @@ module.exports = Object.assign({},
       headless: false,
       executablePath: CHROME_PATH, 
       userDataDir: USER_DATA_PATH,
-      // args: ['--no-sandbox', '--disable-setuid-sandbox', '--auto-open-devtools-for-tabs' ]
+      args: [
+        // '--no-sandbox', 
+        // '--disable-setuid-sandbox', 
+        '--auto-open-devtools-for-tabs', 
+        // '--disk-cache-dir=./tmp/browser-cache-disk' 
+      ]
     },
     waitOpt: {
       waitUntil: 'networkidle2'

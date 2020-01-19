@@ -27,22 +27,20 @@ module.exports = class Core {
     }
 
     this.getTgl()
+    this.getUser()
+    this.getPlan()
 
     await Promise.all([
-      this.getUser(),
-      this.getPlan(),
       this.browserInit(),
     ])
 
-    for(let a of this.nums) if( a == 0 || (a == -1 && this.tglSkrg < 5 )) {
-      this.liburArr = this.getLiburnasByThn(this.tgl[a].thn)
-      if(!(this.liburArr && Array.isArray(this.liburArr) && this.liburArr.length)){
-        this.liburArr = await this.scrapeLiburnas({ tahun: this.tgl[a].thn })
-        for (let l of this.liburArr) {
-          this.addLiburnas(l)
-        }
-    
+    this.liburArr = this.getLiburnasByThn(this.tgl[0].thn)
+    if(!(this.liburArr && Array.isArray(this.liburArr) && this.liburArr.length)){
+      this.liburArr = await this.scrapeLiburnas({ tahun: this.tgl[0].thn })
+      for (let l of this.liburArr) {
+        this.addLiburnas(l)
       }
+  
     }
   }
   
