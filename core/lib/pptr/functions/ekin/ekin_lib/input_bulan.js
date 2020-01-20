@@ -1,11 +1,7 @@
 exports._inputBln = async ({ that, act, blnNum, kuant }) => {
   that.spinner.start('input bulanan')
-  let kd = await that.page.evaluate( async (act, blnNum, kuant) => {
+  let kd = await that.page.evaluate( async (act, blnNum, kuant, opt) => {
     window.confirm = (_, __) => true
-    let data_bulan = JSON.parse(localStorage.getItem("data_bulan"));
-    data_bulan.status ? data_bulan = data_bulan.data : null
-    let opt = ''
-    for( let row of data_bulan) opt += "<option value='"+row.KD_BULAN+"'>"+row.NM_BULAN+"</option>"
     $("#KD_BULAN").html(opt);
     const klik_data_d_kegiatan_tahun = (KD_KEGIATAN_TAHUN,NM_KEGIATAN_TAHUN) => {
       $("#KD_KEGIATAN_TAHUN").val(KD_KEGIATAN_TAHUN);
@@ -18,7 +14,6 @@ exports._inputBln = async ({ that, act, blnNum, kuant }) => {
       $("#KETERANGAN").val('');
     }
     eval(act)
-    // klik_data_d_kegiatan_tahun(...act)
     let dataKd = await $.ajax({
       type: "POST",
       url: "/e-kinerja/v1/d_kegiatan_bulan/buat_kode_d_kegiatan_bulan"
@@ -37,6 +32,6 @@ exports._inputBln = async ({ that, act, blnNum, kuant }) => {
         return { kd_kegiatan_bulan, dataSmp, act, blnNum, kuant }
       }
     }
-  }, act, blnNum, kuant)
+  }, act, blnNum, kuant, that.bulan_opt)
   that.spinner.succeed(`${JSON.stringify(kd)}`)
 }

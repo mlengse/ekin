@@ -69,13 +69,13 @@ moment.locale('id')
           //console.log(tglList)
           //let tglPresensi = tglList.slice(1, 5)
           //console.log(tglPresensi)
-          const { dataKeg } = await ekinGetDataKeg({ ekin });
-          console.log(dataKeg.length);
+          // const { dataKeg } = await ekinGetDataKeg({ ekin });
+          // console.log(dataKeg.length);
           for (let tgl of tglList/*tglPresensi*/) {
             //console.log(tgl)
-            if(presensi){
-              await searchTglAndNIP(presensi, tgl, bln, list)
-            }
+            // if(presensi){
+            //   await searchTglAndNIP(presensi, tgl, bln, list)
+            // }
             await ekinInputRealisasiKegiatan({ ekin, tgl, tglLength, dataKeg })
           }
         }

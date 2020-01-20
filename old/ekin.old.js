@@ -10,7 +10,7 @@ const {
   hapusRealisasiKegiatan, 
   buatKodeRealisasiKeg 
 } = require('./browser')
-const url = process.env.EKIN_URL
+// const url = process.env.EKIN_URL
 // const usernameBos = process.env.EKIN_USERNAME_BOS
 // const passwordBos = process.env.EKIN_PASSWORD_BOS
 // const usernameKA = process.env.EKIN_USERNAME_KA
@@ -20,31 +20,31 @@ const url = process.env.EKIN_URL
 // const loginButton = process.env.LOGIN_BUTTON
 // const rencanaBulanan = process.env.RENCANA_BULANAN_SELECTOR
 // const rencanaBulananUrl = process.env.RENCANA_BULANAN_URL
-const realisasiKegiatan = process.env.REALISASI_KEGIATAN_SELECTOR
-const realisasiKegiatanUrl = process.env.REALISASI_KEGIATAN_URL
-const tableId = process.env.TABLE_ID
+// const realisasiKegiatan = process.env.REALISASI_KEGIATAN_SELECTOR
+// const realisasiKegiatanUrl = process.env.REALISASI_KEGIATAN_URL
+// const tableId = process.env.TABLE_ID
 moment.locale('id')
 
-const ekinGetDataKeg = async ({ ekin }) => {
-  try {
-    await ekin
-      .wait(realisasiKegiatan)
-      .goto(url + realisasiKegiatanUrl)
-      .wait(tableId)
-      .select("#tabel_d_kegiatan_bulan_length > label > select", "100");
-    let dataKeg
-    while(!dataKeg) {
-      dataKeg = await ekin.evaluate(tableKegEval, tableId);
-    }
+// const ekinGetDataKeg = async ({ ekin }) => {
+//   try {
+//     await ekin
+//       .wait(realisasiKegiatan)
+//       .goto(url + realisasiKegiatanUrl)
+//       .wait(tableId)
+//       .select("#tabel_d_kegiatan_bulan_length > label > select", "100");
+//     let dataKeg
+//     while(!dataKeg) {
+//       dataKeg = await ekin.evaluate(tableKegEval, tableId);
+//     }
     
-    return {
-      ekin, dataKeg
-    }
-  } catch (err) {
-    console.log(err)
-  }
+//     return {
+//       ekin, dataKeg
+//     }
+//   } catch (err) {
+//     console.log(err)
+//   }
 
-}
+// }
 
 // const ekinLogin = async (user, passw) => {
 //   if (!user) {

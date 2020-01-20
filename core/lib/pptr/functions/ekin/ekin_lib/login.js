@@ -35,19 +35,6 @@ exports._login = async ({ that, nama, username, password }) => {
     that.isLogin = res.status
     // that.spinner.succeed()
   }
-  that.spinner.start('get data bulan')
-  that.data_bulan = await that.page.evaluate( async () => {
-    if(localStorage){
-      await $.ajax({
-        type: "POST",
-        url: "/e-kinerja/v1/layout/data_bulan",
-        success: (data) => localStorage.setItem("data_bulan", data)           
-      })
-      return JSON.parse(localStorage.getItem('data_bulan'))
-      // return localStorage.getItem('data_bulan')
-    } 
-  })
-  // that.spinner.succeed(`${that.data_bulan}`)
-  that.spinner.succeed(`${that.data_bulan.data.length} bulan`)
+  await that.fetchDataBulan()
 
 }

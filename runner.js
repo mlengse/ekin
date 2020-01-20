@@ -25,6 +25,19 @@ module.exports = async () => {
                 blnNum: ekin.tgl[a].blnNum,
                 kuant: plan[bln]
               })
+              await ekin.getKegBulan({ 
+                bln: `${ekin.tgl[a].bln} ${ekin.tgl[a].thn}` 
+              })
+              kegBln = ekin.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+            }
+            if(kegBln[0].tgtKuant > 1 ) {
+              for(let tgl of ekin.tgl[a].tglList) {
+                await ekin.inputKegiatan({ 
+                  tgl, 
+                  tglLength: ekin.tgl[a].tglLength, 
+                  act: kegBln[0].act 
+                })
+              }
             }
           }
         }
