@@ -4,7 +4,7 @@ exports._login = async ({ that, nama, username, password }) => {
     that.page = that.pages[0]
   }
   await that.page.goto(that.config.EKIN_URL, that.config.waitOpt)
-  that.spinner.succeed()
+  // that.spinner.succeed()
   await that.getUserLogin()
   if(that.user && that.user.username) {
     if(that.user.username === username) {
@@ -17,7 +17,7 @@ exports._login = async ({ that, nama, username, password }) => {
 
   if(!that.isLogin) {
     that.spinner.start(`login ekin user ${nama}`)
-    let body =  this.getParams({
+    let body =  that.getParams({
       USERNAME: username,
       PASSWORD: password
     })
@@ -33,6 +33,21 @@ exports._login = async ({ that, nama, username, password }) => {
       return res.json()
     }, body)
     that.isLogin = res.status
-    that.spinner.succeed()
+    // that.spinner.succeed()
   }
+  that.spinner.start('get data bulan')
+  that.data_bulan = await that.page.evaluate( async () => {
+    if(localStorage){
+      await $.ajax({
+        type: "POST",
+        url: "/e-kinerja/v1/layout/data_bulan",
+        success: (data) => localStorage.setItem("data_bulan", data)           
+      })
+      return JSON.parse(localStorage.getItem('data_bulan'))
+      // return localStorage.getItem('data_bulan')
+    } 
+  })
+  // that.spinner.succeed(`${that.data_bulan}`)
+  that.spinner.succeed(`${that.data_bulan.data.length} bulan`)
+
 }
