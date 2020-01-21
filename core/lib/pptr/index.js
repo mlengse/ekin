@@ -1,11 +1,11 @@
-// exports.pptr = require('puppeteer-core')
-exports.pptr = require('puppeteer-extra')
+exports.pptr = require('puppeteer-core')
+// exports.pptr = require('puppeteer-extra')
 exports.spinner = require('ora')({
   stream: process.stdout
 });
 exports._browserInit = async ({ that }) => {
   that.spinner.start('launch browser')
-  that.pptr.use(require('puppeteer-extra-plugin-stealth')())
+  // that.pptr.use(require('puppeteer-extra-plugin-stealth')())
   that.browser = await that.pptr.launch(that.config.pptrOpt);
   that.pages = await that.browser.pages()
   // that.spinner.succeed()

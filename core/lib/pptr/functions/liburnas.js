@@ -1,7 +1,7 @@
-exports._scrapeLiburnas = async ({pptr, spinner, that, tahun}) => {
-  spinner.start(`scraping libur nasional tahun ${tahun}`)
-  if(!that.pages){
-    that.browser = await pptr.launch(that.config.pptrOpt);
+exports._scrapeLiburnas = async ({that, tahun}) => {
+  that.spinner.start(`scraping libur nasional tahun ${tahun}`)
+  if(!that.pages || (that.pages && !that.pages.length)){
+    that.browser = await that.pptr.launch(that.config.pptrOpt);
     that.pages = await that.browser.pages()
   }
 
@@ -51,7 +51,7 @@ exports._scrapeLiburnas = async ({pptr, spinner, that, tahun}) => {
     that.liburPage = undefined
   }
 
-  spinner.succeed()
+  that.spinner.succeed(`${liburArr.length} hari libur di tahun ${tahun}`)
 
   return liburArr.map(e => Object.assign({}, e, {
     id: that.moment(e.date, 'D MMMM YYYY').format('YYYYMMDD')

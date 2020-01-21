@@ -12,4 +12,5 @@ exports.addSetAktivitas = (obj) => set_aktivitas.get('set_aktivitas').push(obj).
 exports.getDataBulan = () => data_bulan.get('data_bulan').value()
 exports.getAktivitas = () => set_aktivitas.get('set_aktivitas').value()
 exports.getLiburnasByThn = (tahun) => db.get('liburnas').filter({ tahun }).value()
+exports.isMasuk = id => !db.get('liburnas').filter({ id }).value().length
 

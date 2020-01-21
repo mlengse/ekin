@@ -19,6 +19,8 @@ module.exports = async () => {
           let bln = Number(ekin.tgl[a].blnNum)
           let kegThn = ekin.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
           let kegBln = ekin.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+          let maxPoin = Math.round(8500*( a == 0 ? (ekin.tgl[a].tglLength < 20 ? (ekin.tgl[a].tglLength/ekin.tgl[a].tglSum) : 1 ) : 1 ))
+
           if(plan[bln] && kegThn.length ) {
             if(!kegBln.length) {
               await ekin.inputBln({
@@ -33,7 +35,7 @@ module.exports = async () => {
             }
             if(kegBln[0].tgtKuant > 1 ) {
 
-              for(let tgl of ekin.tgl[a].tglList) if( ekin.totalPoin < 8500 ){
+              for(let tgl of ekin.tgl[a].tglList) if( ekin.totalPoin < maxPoin && !ekin.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg).length){
                 let actvs = ekin.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
                 let keg = Object.assign({}, kegBln[0], actvs, {
                   nip: ekin.users[i].username,
@@ -41,11 +43,12 @@ module.exports = async () => {
                   tglLength: ekin.tgl[a].tglLength, 
                   jmlInp: Math.ceil(kegBln[0].tgtKuant / ekin.tgl[a].tglLength).toFixed()
                 })
-                console.log(ekin.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg).length)
-                console.log(keg)
-                // await ekin.inputKegiatan({ 
-                //   keg
-                // })
+                // console.log(ekin.totalPoin, maxPoin)
+                // console.log()
+                // console.log(keg)
+                await ekin.inputKegiatan({ 
+                  keg
+                })
               }
             }
           }

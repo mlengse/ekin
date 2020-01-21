@@ -19,24 +19,35 @@ module.exports = class Core {
     this.browser && await this.browser.close()
   }
 
+  async syncTglLibur(){
+    this.spinner.start('sync tanggal libur')
+    for(let t in this.tgl){
+      let liburArr = this.getLiburnasByThn(this.tgl[t].thn)
+      if(!(liburArr && Array.isArray(liburArr) && liburArr.length)){
+        liburArr = await this.scrapeLiburnas({ tahun: this.tgl[t].thn })
+        for (let l of liburArr) {
+          this.addLiburnas(l)
+        }
+      }
+
+      let tglList = this.tgl[t].tglList.filter( e => this.isMasuk(this.moment(e, 'DD/MM/YYYY').format('YYYYMMDD')))
+      this.tgl[t] = Object.assign({}, this.tgl[t], {
+        tglList,
+        tglLength: tglList.reduce((acc, i) => acc += 1, 0)
+      })
+    }
+
+  }
+
   async init() {
 
     this.getTgl()
     this.getUser()
     this.getPlan()
 
-    await Promise.all([
-      this.browserInit(),
-    ])
+    await this.browserInit()
+    await this.syncTglLibur()
 
-    this.liburArr = this.getLiburnasByThn(this.tgl[0].thn)
-    if(!(this.liburArr && Array.isArray(this.liburArr) && this.liburArr.length)){
-      this.liburArr = await this.scrapeLiburnas({ tahun: this.tgl[0].thn })
-      for (let l of this.liburArr) {
-        this.addLiburnas(l)
-      }
-  
-    }
   }
   
 }
