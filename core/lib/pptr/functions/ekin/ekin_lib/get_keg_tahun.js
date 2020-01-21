@@ -18,7 +18,7 @@ exports._getKegTahun = async({ that }) => {
         tgtKuant: Number(tabs[3].textContent),
         tgtWkt: tabs[4].textContent,
         status: tabs[5].textContent,
-        act//: act.slice(act.indexOf('(')+1, act.indexOf(')')).split("'").join('').split(','),
+        act: act.split('').reduce((a, i) => (a += i).split('\n').join('').split('  ').join(' '), ''),
       }
     }).filter( e => e.kdKeg )
     return rows

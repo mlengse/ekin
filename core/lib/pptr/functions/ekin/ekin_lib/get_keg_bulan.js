@@ -16,7 +16,7 @@ exports._getKegBulan = async ({ that, bln }) => {
         nmKeg: tabs[1].textContent,
         tgtKuant: Number(tabs[2].textContent),
         status: tabs[3].textContent,
-        act//: act.slice(act.indexOf('(')+1, act.indexOf(')')).split("'").join('').split(','),
+        act: act.split('').reduce((a, i) => (a += i).split('\n').join('').split('  ').join(' '), ''),
       }
     }).filter( e => e.bln && e.bln === bln )
     return rows

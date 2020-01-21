@@ -19,7 +19,7 @@ exports.getTgl = () => {
     }
     while (startOfMonth.isBefore(now)) {
       if (now.day() !== 0) {
-        tglList.push(now.format('DD MM YYYY'))
+        tglList.push(now.format('DD/MM/YYYY'))
         tglLength++
       }
       now = now.clone().add(-1, 'day')

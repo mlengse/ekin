@@ -13,6 +13,7 @@ module.exports = async () => {
         await ekin.getKdSKP()
         await ekin.getKegTahun()
         await ekin.getKegBulan({ bln: `${ekin.tgl[a].bln} ${ekin.tgl[a].thn}` })
+        await ekin.fetchRealKeg({ tgl: ekin.tgl[a].tglList[0] })
         for(let p in ekin.plans) {
           let plan = ekin.plans[p]
           let bln = Number(ekin.tgl[a].blnNum)
@@ -31,12 +32,20 @@ module.exports = async () => {
               kegBln = ekin.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
             }
             if(kegBln[0].tgtKuant > 1 ) {
-              for(let tgl of ekin.tgl[a].tglList) {
-                await ekin.inputKegiatan({ 
+
+              for(let tgl of ekin.tgl[a].tglList) if( ekin.totalPoin < 8500 ){
+                let actvs = ekin.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
+                let keg = Object.assign({}, kegBln[0], actvs, {
+                  nip: ekin.users[i].username,
                   tgl, 
                   tglLength: ekin.tgl[a].tglLength, 
-                  act: kegBln[0].act 
+                  jmlInp: Math.ceil(kegBln[0].tgtKuant / ekin.tgl[a].tglLength).toFixed()
                 })
+                console.log(ekin.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg).length)
+                console.log(keg)
+                // await ekin.inputKegiatan({ 
+                //   keg
+                // })
               }
             }
           }

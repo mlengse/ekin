@@ -263,39 +263,39 @@ const ekinInputRealisasiKegiatan = async ({ ekin, tgl, tglLength, dataKeg }) => 
             .evaluate(tableKegEval, '#tabel_d_realisasi_kegiatan')
   
   
-          let jmlInp = 0
-          if (jml > 1) {
-            jmlInp = Math.ceil(jml / tglLength).toFixed()
-            console.log('jml', jml)
-            console.log('tgl length', tglLength)
-            console.log('jml inp', jmlInp)
-          }
+          // let jmlInp = 0
+          // if (jml > 1) {
+          //   jmlInp = Math.ceil(jml / tglLength).toFixed()
+          //   console.log('jml', jml)
+          //   console.log('tgl length', tglLength)
+          //   console.log('jml inp', jmlInp)
+          // }
   
-          let kdAktivitas
-          if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Mencatat'
-          } else if (['medik', 'konsul', 'pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Memeriksa'
-          } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Mengkoordinasikan'
-          } else if (['Menyiapkan bahan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Menyiapkan data/dokumen/laporan'
-          } else if (['rencana'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Merencanakan'
-          } else if (['menyusun instrumen'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Menyusun data/bahan'
-          } else if (['umpulkan data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Mengumpulkan Bahan/Data'
-          } else if (['mengolah data', 'analisis data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Mengolah Data'
-          } else if (['membuat rancangan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Membuat Rancangan'
-          } else if (['mengajar', 'melatih', 'memberikan pelatihan', 'advokasi', 'penyuluhan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
-            kdAktivitas = 'Membimbing'
-          } else {
-            console.log(keg)
-            console.log('kode aktivitas belum ditentukan')
-          }
+          // let kdAktivitas
+          // if (['catatan medik', 'catatan', 'dokumentasi', 'dukumentasi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Mencatat'
+          // } else if (['medik', 'konsul', 'pasien', 'konsultasi gizi'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Memeriksa'
+          // } else if (['anggung jawab', 'laksana program'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Mengkoordinasikan'
+          // } else if (['Menyiapkan bahan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Menyiapkan data/dokumen/laporan'
+          // } else if (['rencana'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Merencanakan'
+          // } else if (['menyusun instrumen'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Menyusun data/bahan'
+          // } else if (['umpulkan data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Mengumpulkan Bahan/Data'
+          // } else if (['mengolah data', 'analisis data'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Mengolah Data'
+          // } else if (['membuat rancangan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Membuat Rancangan'
+          // } else if (['mengajar', 'melatih', 'memberikan pelatihan', 'advokasi', 'penyuluhan'].filter(e => keg.toLowerCase().includes(e.toLowerCase())).length) {
+          //   kdAktivitas = 'Membimbing'
+          // } else {
+          //   console.log(keg)
+          //   console.log('kode aktivitas belum ditentukan')
+          // }
   
           if( tableRealisasiKeg.length && tableRealisasiKeg[0].act) {
             console.log('sudah diinput')
