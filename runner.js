@@ -35,7 +35,7 @@ module.exports = async () => {
             }
             if(kegBln[0].tgtKuant > 1 ) {
 
-              for(let tgl of ekin.tgl[a].tglList) if( ekin.totalPoin < maxPoin && !ekin.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg).length){
+              for(let tgl of ekin.tgl[a].tglList) {
                 let actvs = ekin.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
                 let keg = Object.assign({}, kegBln[0], actvs, {
                   nip: ekin.users[i].username,
@@ -43,12 +43,16 @@ module.exports = async () => {
                   tglLength: ekin.tgl[a].tglLength, 
                   jmlInp: Math.ceil(kegBln[0].tgtKuant / ekin.tgl[a].tglLength).toFixed()
                 })
-                // console.log(ekin.totalPoin, maxPoin)
-                // console.log()
-                // console.log(keg)
-                await ekin.inputKegiatan({ 
-                  keg
-                })
+                let kegExist = ekin.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg)
+  
+                if( ekin.totalPoin < maxPoin && !kegExist.length){
+                  // console.log(ekin.totalPoin, maxPoin)
+                  // console.log()
+                  // console.log(keg)
+                  await ekin.inputKegiatan({ 
+                    keg
+                  })
+                }
               }
             }
           }
