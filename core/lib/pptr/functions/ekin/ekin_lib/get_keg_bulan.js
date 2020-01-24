@@ -1,10 +1,17 @@
 exports._getKegBulan = async ({ that, bln }) => {
   that.spinner.start('get keg bulan')
   that.kegBulan = await that.page.evaluate( async bln => {
-    document.getElementById('report_tabel_d_kegiatan_bulan').innerHTML = await $.ajax({
+    let response = await $.ajax({
       type: "POST",
       url: "/e-kinerja/v1/d_kegiatan_bulan/tabel_d_kegiatan_bulan"
     })
+    let el = document.getElementById('report_tabel_d_kegiatan_bulan')
+    if(!el){
+      el = document.querySelector('div')
+      el.insertAdjacentHTML('afterend', response)
+    } else {
+      el.innerHTML = response
+    }
     let rows = [...document.getElementById('tabel_d_kegiatan_bulan').querySelectorAll('tr')].map( row => {
       let tabs = [...row.querySelectorAll('td')]
       if( !tabs[0]) {

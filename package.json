@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "npm install"
   },
   "repository": {
     "type": "git",
@@ -17,14 +17,13 @@
   },
   "homepage": "https://github.com/mlengse/ekin#readme",
   "dependencies": {
-    "chrome-aws-lambda": "^2.0.2",
     "csv-parser": "^2.3.2",
-    "dotenv": "^6.2.0",
     "lowdb": "^1.0.0",
     "moment": "^2.24.0",
     "ora": "^4.0.3",
-    "puppeteer-core": "^2.0.0",
-    "puppeteer-extra": "^3.1.9",
-    "puppeteer-extra-plugin-stealth": "^2.4.9"
+    "puppeteer": "^2.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
   }
 }

@@ -49,5 +49,6 @@ module.exports = class Core {
     await this.syncTglLibur()
 
   }
+
   
 }

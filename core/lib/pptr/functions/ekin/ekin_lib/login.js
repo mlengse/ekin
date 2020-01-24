@@ -8,9 +8,9 @@ exports._login = async ({ that, nama, username, password }) => {
   await that.getUserLogin()
   if(that.user && that.user.username) {
     if(that.user.username === username) {
-      that.user = Object.assign({}, that.user, { nama, password })
+      that.user = Object.assign({}, that.user, { nama, username, password })
     } else {
-      that.user = { nama, username, password }
+      that.isLogin = false
       await that.logout()
     }
   }
@@ -33,7 +33,9 @@ exports._login = async ({ that, nama, username, password }) => {
       return res.json()
     }, body)
     that.isLogin = res.status
-    // that.spinner.succeed()
+    that.user = Object.assign({}, that.user, { nama, username, password })
+    that.spinner.succeed(`logged in user ${nama}`)
+    await that.page.reload()
   }
   await that.fetchDataBulan()
 

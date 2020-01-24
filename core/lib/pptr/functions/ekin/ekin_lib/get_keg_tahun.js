@@ -1,11 +1,18 @@
 exports._getKegTahun = async({ that }) => {
   that.spinner.start(`get keg tahun ${that.kdSKP}`)
   that.kegTahun = await that.page.evaluate(async KD_SKP => {
-    document.getElementById('report_tabel_d_kegiatan_tahun').innerHTML = await $.ajax({
+    let response = await $.ajax({
       type: "POST",
       url: "/e-kinerja/v1/d_kegiatan_bulan/tabel_d_kegiatan_tahun",
       data: { KD_SKP }
     })
+    let el = document.getElementById('report_tabel_d_kegiatan_tahun')
+    if(!el) {
+      el = document.querySelector('div')
+      el.insertAdjacentHTML('afterend', response)
+    } else {
+      el.innerHTML = response
+    }
     let rows = [...document.getElementById('tabel_d_kegiatan_tahun').querySelectorAll('tr')].map( row => {
       let tabs = [...row.querySelectorAll('td')]
       if( !tabs[0]) {
