@@ -14,6 +14,10 @@ module.exports = class Core {
     }
   }
 
+  getKualitasRand(){
+    return 76 + Math.floor(Math.random() * ( 90 -76 ))
+  }
+
   async close(){
     this.spinner.stop()
     this.browser && await this.browser.close()
