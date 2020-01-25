@@ -35,7 +35,7 @@ exports._fetchSKPTahunanStaff = async({ that, dataBawahan}) => {
       return accRow
     }, [])
   }, post)
-  that.spinner.succeed(`${skpBawahan.length} keg SKP ${that.thnSKP} ${dataBawahan.NAMA}`)
+  // that.spinner.succeed(`${skpBawahan.length} keg SKP ${that.thnSKP} ${dataBawahan.NAMA}`)
   
   return skpBawahan
 

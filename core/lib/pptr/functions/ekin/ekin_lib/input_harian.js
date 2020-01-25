@@ -6,7 +6,6 @@ exports._inputHarian = async ({ that, a, i }) => {
     let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
     let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
     let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLength < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
-
     if(plan[bln] && kegThn.length ) {
       if(!kegBln.length) {
         await that.inputBln({

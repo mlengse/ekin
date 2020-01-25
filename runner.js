@@ -12,7 +12,7 @@ module.exports = async () => {
     for(let a of ekin.nums) if( a == 0 || (a == -1 && ekin.tglSkrg < 5 )) {
       for( let i in ekin.users) {
         await ekin.login( ekin.users[i] )
-        if( i === 'anjang') {
+        if( i === 'anjang' || i === 'monic') {
           await ekin.getKdSKP()
           await ekin.getKegTahun()
           await ekin.getKegBulan({ bln: `${ekin.tgl[a].bln} ${ekin.tgl[a].thn}` })
@@ -47,18 +47,22 @@ module.exports = async () => {
           
             }
         }
+
         if(!!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
+          // console.log(ekin.isApproveSKP)
           for(let dataBawahan of ekin.users[i].dataBawahan){
             dataBawahan = await ekin.fetchSKPStaff({dataBawahan})
             let dataKegSKPStaff = await ekin.fetchSKPTahunanStaff({dataBawahan})
-            for(let kegSKP of dataKegSKPStaff){
-              kegSKP = await ekin.fetchKegSKP({kegSKP})
-              if( !kegSKP.TARGET_KUALITAS_R) {
-                kegSKP.TARGET_KUALITAS_R = ekin.getKualitasRand()
-                await ekin.inputKualitas({ kegSKP })                
+            if(dataKegSKPStaff.length) {
+              for(let kegSKP of dataKegSKPStaff){
+                kegSKP = await ekin.fetchKegSKP({kegSKP})
+                if( !kegSKP.TARGET_KUALITAS_R ) {
+                  kegSKP.TARGET_KUALITAS_R = ekin.getKualitasRand()
+                  await ekin.inputKualitas({ kegSKP })                
+                }
               }
+              await ekin.inputPerilaku({ dataBawahan })
             }
-            await ekin.inputPerilaku({ dataBawahan })
           }
         }
         
