@@ -26,9 +26,10 @@ exports._fetchRealKeg = async ({ that,  tgl }) => {
         status: tabs[4].textContent,
         act: act && act.split('').reduce((a, i) => (a += i).split('\n').join('').split('  ').join(' '), ''),
       }
-    })//.filter( e => e.tgl && e.tgl === tgl )
+    }).filter( e => e.tgl /*&& e.tgl === tgl*/ )
     return rows
   }, tgl )
+  // console.log(that.realKeg)
   that.totalPoin = that.realKeg.map(({poin}) => poin).reduce((ac, i) => i ? ac += i : ac, 0)
   that.spinner.succeed(`${that.realKeg.length} realisasi kegiatan dengan total poin ${that.totalPoin}`)
   // return that.realKeg

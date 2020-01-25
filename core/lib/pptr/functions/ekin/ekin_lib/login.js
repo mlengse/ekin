@@ -33,8 +33,10 @@ exports._login = async ({ that, nama, username, password }) => {
       return res.json()
     }, body)
     that.isLogin = res.status
+    await that.page.reload()
+    await that.getUserLogin()
     that.user = Object.assign({}, that.user, { nama, username, password })
-    that.spinner.succeed(`logged in user ${nama}`)
+    that.spinner.succeed(`logged in user ${that.user.nl} ${that.user.jab}`)
     await that.page.reload()
   }
   await that.fetchDataBulan()
