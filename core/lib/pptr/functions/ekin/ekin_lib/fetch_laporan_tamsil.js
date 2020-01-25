@@ -1,7 +1,7 @@
 exports._getLaporanTamsil = async ({that, blnNum, thn}) => {
   let satker = that.satker
   await that.getSatker()
-  that.spinner.start(`fetch laporan tamsil staff ${that.user.nama}`)
+  that.spinner.start(`fetch laporan tamsil staff ${that.user.nl}`)
   if(that.satker !== satker) {
     let post = {
       method: 'POST',
@@ -51,7 +51,7 @@ exports._getLaporanTamsil = async ({that, blnNum, thn}) => {
   let dataBawahan = that.users[that.user.nama].dataBawahan
   let indexNIPs = dataBawahan.map(({NIP_18}) => NIP_18 )
   that.filteredTamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1 && Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
-  that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nama} dengan kinerja < 100%`)
+  that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} dengan kinerja < 100%`)
   return that.filteredTamsil
   
 }

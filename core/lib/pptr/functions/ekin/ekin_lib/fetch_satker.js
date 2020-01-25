@@ -13,6 +13,6 @@ exports._getSatker = async ({that}) => {
 
     return document.getElementById('KD_SATKER').value
   })
-  that.spinner.succeed(`satker: ${that.satker}`)
+  // that.spinner.succeed(`satker: ${that.satker}`)
   // return that.satker
 }
