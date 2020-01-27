@@ -28,7 +28,7 @@ exports._fetchSKPStaff = async({ that, dataBawahan}) => {
         tahun: null,
         status: null
       })
-      if(o.kodeSKP && o.status === 'A'){
+      if(o.kodeSKP){
         accRow.push(o)
       }
       return accRow
@@ -36,6 +36,6 @@ exports._fetchSKPStaff = async({ that, dataBawahan}) => {
   }, post)
   // that.spinner.succeed(`kode SKP ${skpBawahan[0].kodeSKP} a.n. ${dataBawahan.NAMA} thn ${that.thnSKP}`)
   
-  return Object.assign({}, dataBawahan, skpBawahan[0])
+  return skpBawahan.map( e=> Object.assign({}, dataBawahan, e))
 
 }

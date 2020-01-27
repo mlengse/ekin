@@ -51,17 +51,17 @@ module.exports = async () => {
         if(!!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
           // console.log(ekin.isApproveSKP)
           for(let dataBawahan of ekin.users[i].dataBawahan){
-            dataBawahan = await ekin.fetchSKPStaff({dataBawahan})
-            let dataKegSKPStaff = await ekin.fetchSKPTahunanStaff({dataBawahan})
-            if(dataKegSKPStaff.length) {
-              for(let kegSKP of dataKegSKPStaff){
+            let dataBawahans = await ekin.fetchSKPStaff({dataBawahan})
+            if(dataBawahans.length) for( let datBaw of dataBawahans) {
+              let dataKegSKPStaff = await ekin.fetchSKPTahunanStaff({dataBawahan: datBaw})
+              if(dataKegSKPStaff.length) for(let kegSKP of dataKegSKPStaff){
                 kegSKP = await ekin.fetchKegSKP({kegSKP})
                 if( !kegSKP.TARGET_KUALITAS_R ) {
                   kegSKP.TARGET_KUALITAS_R = ekin.getKualitasRand()
                   await ekin.inputKualitas({ kegSKP })                
                 }
               }
-              await ekin.inputPerilaku({ dataBawahan })
+              await ekin.inputPerilaku({ dataBawahan: datBaw })
             }
           }
         }
