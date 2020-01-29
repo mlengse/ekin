@@ -2,7 +2,7 @@
 exports._approve = async ({that, act, poin}) => {
   if(act.act){
     let uraian = Object.keys(act).filter(e=> ['act', 'kode', 'stat', 'bulan', 'res', 'kuantitas', 'poin'].indexOf(e) === -1).map( e => (`, ${act[e]}`)).join('')
-    that.spinner.start(`approve ${uraian}`)
+    that.spinner.start(`approve${uraian}`)
     act.res = await that.page.evaluate( async act => {
       const getParams = obj => Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&')
       let appr = eval(act)

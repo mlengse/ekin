@@ -11,7 +11,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan}) => {
       }),
     }
 
-    that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi`)
+    that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
     await that.page.reload()
 
     acts = await await that.page.evaluate(async (acts, post) => {

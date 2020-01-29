@@ -1,5 +1,9 @@
 exports._inputBln = async ({ that, act, blnNum, kuant }) => {
   that.spinner.start('input bulanan')
+  if(!that.bulan_opt){
+    await that.fetchDataBulan()
+  }
+  await that.page.goto(`${that.config.EKIN_URL}/d_kegiatan_bulan`, that.config.waitOpt)
   let kd = await that.page.evaluate( async (act, blnNum, kuant, opt) => {
     window.confirm = (_, __) => true
     $("#KD_BULAN").html(opt);
@@ -33,5 +37,5 @@ exports._inputBln = async ({ that, act, blnNum, kuant }) => {
       }
     }
   }, act, blnNum, kuant, that.bulan_opt)
-  that.spinner.succeed(`${JSON.stringify(kd)}`)
+  that.spinner.succeed(`${kd.dataSmp.msg} ${kd.act}`)
 }

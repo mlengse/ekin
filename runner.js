@@ -27,21 +27,8 @@ module.exports = async () => {
             await ekin.approveKegStaff( { a, i })
         }
 
-        if(!!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
-          for(let dataBawahan of ekin.users[i].dataBawahan){
-            let dataBawahans = await ekin.fetchSKPStaff({dataBawahan})
-            if(dataBawahans.length) for( let datBaw of dataBawahans) {
-              let dataKegSKPStaff = await ekin.fetchSKPTahunanStaff({dataBawahan: datBaw})
-              if(dataKegSKPStaff.length) for(let kegSKP of dataKegSKPStaff){
-                kegSKP = await ekin.fetchKegSKP({kegSKP})
-                if( !kegSKP.TARGET_KUALITAS_R ) {
-                  kegSKP.TARGET_KUALITAS_R = ekin.getKualitasRand()
-                  await ekin.inputKualitas({ kegSKP })                
-                }
-              }
-              await ekin.inputPerilaku({ dataBawahan: datBaw })
-            }
-          }
+        if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
+          await ekin.approveSKPStaff({ i })
         }
         
       }

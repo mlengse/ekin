@@ -14,7 +14,7 @@ exports._fetchDataBulan = async({ that }) => {
     })
     that.data_bulan = res.data
     that.data_bulan.map( data_bulan => that.addDataBulan(data_bulan))
-    that.bulan_opt = thath.data_bulan.reduce( (acc, row) => acc += "<option value='"+row.KD_BULAN+"'>"+row.NM_BULAN+"</option>", '')
+    that.bulan_opt = that.data_bulan.reduce( (acc, row) => acc += "<option value='"+row.KD_BULAN+"'>"+row.NM_BULAN+"</option>", '')
     that.spinner.succeed(`${that.data_bulan.length} bulan`)
   }
 

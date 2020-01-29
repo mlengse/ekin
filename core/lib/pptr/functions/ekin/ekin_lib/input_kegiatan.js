@@ -36,7 +36,7 @@ exports._inputKegiatan = async({ that, keg }) => {
       }
     }
   }, keg, that.bulan_opt)
-  that.spinner.succeed(`${JSON.stringify(kd)}`)
+  that.spinner.succeed(`${kd.msg} ${kd.tgl} ${kd.nmKeg}`)
   if(kd.error === null && kd.msg === "Data berhasil disimpan") {
     await that.fetchRealKeg({ tgl: keg.tgl })
   }
