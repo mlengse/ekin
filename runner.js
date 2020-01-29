@@ -15,41 +15,19 @@ module.exports = async () => {
         if( i === 'anjang' || i === 'monic') {
           await ekin.getKdSKP()
           await ekin.getKegTahun()
-          await ekin.getKegBulan({ bln: `${ekin.tgl[a].bln} ${ekin.tgl[a].thn}` })
-          await ekin.fetchRealKeg({ tgl: ekin.tgl[a].tglList[0] })
+          await ekin.getKegBulan({ a })
+          await ekin.fetchRealKeg({ a })
           await ekin.inputHarian({ a, i })
         }
         if( a == 0 || ( a == -1 
           && (( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
           || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))) {
             await ekin.getDataBawahan()
-            let { tglLength, tglSum, blnNum, thn } = ekin.tgl[a]
-            await ekin.getLaporanTamsil({blnNum, thn})
-            let maxPoin = Math.round(8500*( a == 0 ? (tglLength < 20 ? (tglLength/tglSum) : 1 ) : 1 ))
-            let indexNIPs = ekin.users[i].dataBawahan.map(({NIP_18}) => NIP_18 )
-  
-            for(tamsil of ekin.filteredTamsil){
-              let existsIndex = indexNIPs.indexOf(tamsil.nip)
-              let poin = Number(tamsil.poin.split('POIN').join('').trim())
-              let dataBawahan = Object.assign({}, ekin.users[i].dataBawahan[existsIndex], tamsil, {
-                poin,
-                persen: Number(parseFloat(tamsil.kinerjaPersen)/100)
-              })
-              if(poin < maxPoin) {
-                let acts = await ekin.getLaporanRealisasi({dataBawahan, blnNum, thn})
-                acts = await ekin.getDataApprovalBawahan({acts, dataBawahan})
-                while(Array.isArray(acts) && acts.length && poin < maxPoin) {
-                  let act = acts.shift()
-                  poin = await ekin.approve({ act, poin })
-                }
-  
-              }
-          
-            }
+            await ekin.getLaporanTamsil({ a })
+            await ekin.approveKegStaff( { a, i })
         }
 
         if(!!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
-          // console.log(ekin.isApproveSKP)
           for(let dataBawahan of ekin.users[i].dataBawahan){
             let dataBawahans = await ekin.fetchSKPStaff({dataBawahan})
             if(dataBawahans.length) for( let datBaw of dataBawahans) {

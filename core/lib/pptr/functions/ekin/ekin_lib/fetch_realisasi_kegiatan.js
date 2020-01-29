@@ -1,5 +1,6 @@
-exports._fetchRealKeg = async ({ that,  tgl }) => {
-  that.spinner.start('fetch realisasi keg')
+exports._fetchRealKeg = async ({ that, a }) => {
+  let tgl = that.tgl[a].tglList[0]
+  that.spinner.start(`fetch realisasi keg hingga tgl ${tgl}`)
   that.realKeg = await that.page.evaluate( async tgl => {
     let reportReal = document.createElement('div')
     reportReal.id = "report_tabel_d_realisasi_kegiatan"

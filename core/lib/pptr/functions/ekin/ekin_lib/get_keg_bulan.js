@@ -1,5 +1,6 @@
-exports._getKegBulan = async ({ that, bln }) => {
-  that.spinner.start('get keg bulan')
+exports._getKegBulan = async ({ that, a }) => {
+  let bln = `${that.tgl[a].bln} ${that.tgl[a].thn}`
+  that.spinner.start(`get keg bulan ${bln}`)
   that.kegBulan = await that.page.evaluate( async bln => {
     let response = await $.ajax({
       type: "POST",

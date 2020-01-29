@@ -1,5 +1,5 @@
 exports._fetchSKPStaff = async({ that, dataBawahan}) => {
-  that.spinner.start(`fetch SKP ${dataBawahan.NAMA} thn ${that.thnSKP}`)
+  that.spinner.start(`fetch SKP ${that.thnSKP} ${dataBawahan.NAMA}`)
 
   let post = {
     type: "POST",

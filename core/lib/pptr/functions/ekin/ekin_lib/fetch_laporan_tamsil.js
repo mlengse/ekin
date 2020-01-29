@@ -1,4 +1,5 @@
-exports._getLaporanTamsil = async ({that, blnNum, thn}) => {
+exports._getLaporanTamsil = async ({that, a }) => {
+  let { blnNum, thn } = that.tgl[a]
   let satker = that.satker
   await that.getSatker()
   that.spinner.start(`fetch laporan tamsil staff ${that.user.nl}`)
