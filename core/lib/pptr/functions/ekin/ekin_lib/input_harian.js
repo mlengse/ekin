@@ -2,6 +2,8 @@ exports._inputHarian = async ({ that, a, i }) => {
   let tglObj = that.tgl[a]
   let bln = Number(tglObj.blnNum)
   let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLength < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
+  let kegBlnBefore = 0
+  let kegBlnAfter = 0
   for(let p in that.plans) {
     let plan = that.plans[p]
     let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
@@ -13,18 +15,17 @@ exports._inputHarian = async ({ that, a, i }) => {
           blnNum: tglObj.blnNum,
           kuant: plan[bln]
         })
-        // await that.getKegBulan({ 
-        //   a
-        //   // bln: `${tglObj.bln} ${tglObj.thn}` 
-        // })
         kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+        kegBlnAfter += 1
+      } else {
+        kegBlnBefore += 1
+        kegBlnAfter += 1
       }
     }
   }
-  await that.getKegBulan({ 
-    a
-    // bln: `${tglObj.bln} ${tglObj.thn}` 
-  })
+
+  if(kegBlnAfter > kegBlnBefore) { await that.getKegBulan({ a }) }
+
 
   for(let p in that.plans) {
     let plan = that.plans[p]
