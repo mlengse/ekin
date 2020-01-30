@@ -34,6 +34,7 @@ module.exports = Object.assign({},
   {
     pptrOpt,
     waitOpt: {
-      waitUntil: 'networkidle2'
+      waitUntil: 'networkidle2',
+      timeout: 0
     }
   })
