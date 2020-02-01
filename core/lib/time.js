@@ -23,7 +23,7 @@ exports._syncTglLibur =  async ({that}) => {
 }
 exports.tglSkrg = Number(moment().format('DD'))
 exports.thnSkrg = Number(moment().format('YYYY'))
-exports.nums = [0, -1]
+exports.nums = [-1, 0]
 exports.tgl = {}
 exports.getTgl = () => {
   for(let num of this.nums ) {
