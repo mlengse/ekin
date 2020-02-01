@@ -14,7 +14,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan}) => {
     that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
     await that.page.reload()
 
-    acts = await await that.page.evaluate(async (acts, post) => {
+    acts = await that.page.evaluate(async (acts, post) => {
       let wrapper = document.querySelector('div')
       let response = await fetch('/e-kinerja/v1/d_approve_realisasi_kegiatan/tabel_d_approve_realisasi_kegiatan', post)
       wrapper.insertAdjacentHTML('afterend', await response.text() )
