@@ -21,15 +21,16 @@ module.exports = async () => {
         }
         if( a == 0 || ( a == -1 
           && (( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
-          || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))) {
+          || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin'))
+          )) {
             await ekin.getDataBawahan()
             await ekin.getLaporanTamsil({ a })
             await ekin.approveKegStaff( { a, i })
         }
 
-        if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
-          await ekin.approveSKPStaff({ i })
-        }
+        // if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
+        //   await ekin.approveSKPStaff({ i })
+        // }
         
       }
     }
