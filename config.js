@@ -4,7 +4,7 @@ const {
 } = process.env
 let pptrOpt = {}
 // console.log(process.platform)
-if(process.platform === 'win32') {
+if(process.platform === 'win32' || CHROME_PATH ) {
   pptrOpt = {
     // headless: true,
     headless: false,
