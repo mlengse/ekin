@@ -9,7 +9,7 @@ const ekin = new Core(config)
 module.exports = async () => {
   try {
     await ekin.init()
-    for(let a of ekin.nums) if( a == 0 || (a == -1 && ekin.tglSkrg < 5 )) {
+    for(let a of ekin.nums) {//if( a == 0 || (a == -1 && ekin.tglSkrg < 5 )) {
       // if(a === -1) {
       for( let i in ekin.users) {
         await ekin.login( ekin.users[i] )
@@ -21,8 +21,8 @@ module.exports = async () => {
           await ekin.inputHarian({ a, i })
         }
         if( a == 0 || ( a == -1 
-          && (( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
-          || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin'))
+          && ((( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
+            || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))
           )) {
           await ekin.getDataBawahan()
           await ekin.getLaporanTamsil({ a })
