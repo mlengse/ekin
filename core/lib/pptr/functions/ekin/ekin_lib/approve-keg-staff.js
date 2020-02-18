@@ -1,6 +1,10 @@
 exports._approveKegStaff = async ({ that, a, i }) => {
   let { tglLength, tglSum, blnNum, thn } = that.tgl[a]
-  let maxPoin = Math.round(8500*( a == 0 ? (tglLength < 20 ? (tglLength/tglSum) : 1 ) : 1 ))
+  let max = 8500
+  if( i === 'nur'){
+    max =7500
+  }
+  let maxPoin = Math.round(max*( a == 0 ? (tglLength < 20 ? (tglLength/tglSum) : 1 ) : 1 ))
   let indexNIPs = that.users[i].dataBawahan.map(({NIP_18}) => NIP_18 )
   for(tamsil of that.filteredTamsil){
     let existsIndex = indexNIPs.indexOf(tamsil.nip)
