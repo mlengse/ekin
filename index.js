@@ -1,6 +1,6 @@
 const { schedule } = require('node-cron')
 const runner = require('./runner')
-schedule('10 16 * * *', async () => {
+schedule('10 15 * * *', async () => {
 	try{
 		await runner()
 	}catch(err){
