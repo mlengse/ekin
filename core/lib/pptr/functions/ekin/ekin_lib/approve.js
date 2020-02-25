@@ -4,7 +4,6 @@ exports._approve = async ({that, act, poin}) => {
     let uraian = Object.keys(act).filter(e=> ['act', 'kode', 'stat', 'bulan', 'res', 'kuantitas', 'poin'].indexOf(e) === -1).map( e => (`, ${act[e]}`)).join('')
     that.spinner.start(`approve${uraian}`)
     act.res = await that.page.evaluate( async act => {
-      if(act.includes('\\')){ act = act.split('\\').join('')}
       const getParams = obj => Object.entries(obj).map(([key, val]) => `${key}=${val}`).join('&')
       let appr = eval(act)
       function klik_data_d_approve_kegiatan_tambahan(NIP,KD_KEGIATAN_TAMBAHAN,NM_KEGIATAN,KD_AKTIVITAS,NM_AKTIVITAS,POIN,TGL_KEGIATAN_TAMBAHAN,KD_TAHUN,KD_BULAN,JAM_MULAI,JAM_SELESAI,NM_BULAN,PEMBERI_TUGAS,KUANTITAS,STATUS,STATUS_REVISI,BIAYA,KETERANGAN,NIP_APPROVE,TGL_APPROVE,NM_STATUS_APPROVE,CATATAN) {

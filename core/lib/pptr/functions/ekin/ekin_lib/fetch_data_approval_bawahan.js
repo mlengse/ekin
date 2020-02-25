@@ -26,9 +26,10 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan}) => {
         let actEl = row.getAttribute('ondblclick')
         if(actEl) {
           let act = actEl.split('\n').map(e=>e.trim()).join('')
-  
+          if(act.includes('\t')){ act = act.split('\t').join('')}
+          if(act.includes('\\')){ act = act.split('\\').join('')}
           for(let kode in  actsAcc) {
-            if(act.includes(kode)){
+            if(act.includes(kode) && act.slice(-1) === ')'){
               actsAcc[kode].act = act
             }
           }
