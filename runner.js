@@ -37,8 +37,10 @@ module.exports = async () => {
       }
     }
     await ekin.close()
+    console.log(`process done: ${new Date()}`)
   }catch(e){
+    ekin.close()
     console.error(e)
-    await ekin.close()
+    console.error(`process error: ${new Date()}`)
   }
 }
