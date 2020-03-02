@@ -2,6 +2,7 @@ exports._inputHarian = async ({ that, a, i }) => {
   let tglObj = that.tgl[a]
   let bln = Number(tglObj.blnNum)
   let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLength < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
+  that.spinner.start(`poin maksimal hari ini ${maxPoin}`)
   let kegBlnBefore = 0
   let kegBlnAfter = 0
   for(let p in that.plans) {
@@ -10,11 +11,13 @@ exports._inputHarian = async ({ that, a, i }) => {
     let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
     if(plan[bln] && kegThn.length ) {
       if(!kegBln.length) {
+        that.spinner.start(`input keg bln kuant ${plan[bln]} ${plan.kegiatan}`)
         await that.inputBln({
           act: kegThn[0].act,
           blnNum: tglObj.blnNum,
           kuant: plan[bln]
         })
+        that.spinner.succeed(`keg bln kuant ${plan[bln]} ${plan.kegiatan}`)
         kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
         kegBlnAfter += 1
       } else {
