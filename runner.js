@@ -22,7 +22,7 @@ module.exports = async () => {
         }
         if( a == 0 || ( a == -1 
           && ((( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
-            || (( ekin.tglSkrg < 3 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))
+            || (( ekin.tglSkrg < 4 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))
           )) {
             await ekin.login( ekin.users[i] )
             await ekin.getDataBawahan()
