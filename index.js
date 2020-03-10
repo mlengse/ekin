@@ -1,3 +1,3 @@
 const { schedule } = require('node-cron')
 const runner = require('./runner')
-schedule('33 10 * * *', async () => await runner())
+schedule('33 5,11,16 * * *', async () => await runner())
