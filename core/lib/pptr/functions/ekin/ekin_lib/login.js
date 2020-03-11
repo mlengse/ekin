@@ -1,8 +1,6 @@
 exports._login = async ({ that, nama, username, password }) => {
   that.spinner.start(`go to ${that.config.EKIN_URL}`)
-  if(!that.page) {
-    that.page = that.pages[0]
-  }
+  that.page = that.pages[0]
   await that.page.goto(that.config.EKIN_URL, that.config.waitOpt)
   // that.spinner.succeed()
   await that.getUserLogin()

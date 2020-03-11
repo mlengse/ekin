@@ -20,8 +20,11 @@ module.exports = class Core {
 
   async close(){
     this.spinner.stop()
-    if(!!this.browser) {
-      await this.browser.close()
+    // if(this.page) {
+    //   await this.page.close()
+    // }
+    if(this.browser.isConnected()) {
+      await this.browser.disconnect()
     }
   }
 
