@@ -10,13 +10,13 @@ if(process.platform === 'win32' || CHROME_PATH ) {
     headless: false,
     executablePath: `${CHROME_PATH}`, 
     userDataDir: `${USER_DATA_PATH}`,
-    // args: [
-    //   '--content-shell-hide-toolbar',
-    //   '--hide',
-    //   '--hide-scrollbars',
-    //   '--window-position=0,0',
-    //   '--window-size=0,0'
-    // ]
+    args: [
+      '--content-shell-hide-toolbar',
+      '--hide',
+      '--hide-scrollbars',
+      '--window-position=0,0',
+      '--window-size=0,0'
+    ]
   }
 } else {
   pptrOpt = {

@@ -1,3 +1,7 @@
 exports._getLoginStatus = async ({ that }) => {
-  return await that.page.evaluate( async () => localStorage && localStorage.getItem("status_login"))
+  let isLogin = await that.page.evaluate( async () => localStorage && localStorage.getItem("status_login"))
+  if(isLogin){
+    isLogin = await that.page.evaluate( async () => !!document.getElementById('header'))
+  }
+  return isLogin
 }
