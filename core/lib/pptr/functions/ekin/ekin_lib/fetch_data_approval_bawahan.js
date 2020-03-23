@@ -12,7 +12,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan}) => {
     }
 
     that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
-    await that.page.reload()
+    await that.page.reload(that.config.waitOpt)
 
     acts = await that.page.evaluate(async (acts, post) => {
       let wrapper = document.querySelector('div')
