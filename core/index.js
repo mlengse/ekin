@@ -26,6 +26,7 @@ module.exports = class Core {
     if(this.browser.isConnected()) {
       await this.browser.disconnect()
     }
+    
   }
 
   async init() {
