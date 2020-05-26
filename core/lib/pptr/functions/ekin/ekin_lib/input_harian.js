@@ -2,8 +2,10 @@ exports._inputHarian = async ({ that, a, i }) => {
   let tglObj = that.tgl[a]
   let bln = Number(tglObj.blnNum)
   let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLength < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
+
   let kegBlnBefore = 0
   let kegBlnAfter = 0
+  // console.log(that.plans)
   for(let p in that.plans) {
     let plan = that.plans[p]
     let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
@@ -31,9 +33,9 @@ exports._inputHarian = async ({ that, a, i }) => {
 
   for(let p in that.plans) {
     let plan = that.plans[p]
-    let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+    // let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
     let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
-    if(plan[bln] && kegThn.length ) {
+    if(plan[bln] && kegBln.length ) {
       if(kegBln[0].tgtKuant > 1 ) {
         for(let tgl of tglObj.tglList) {
           let actvs = that.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
@@ -49,6 +51,9 @@ exports._inputHarian = async ({ that, a, i }) => {
             jmlInp
           })
           let kegExist = that.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg)
+          // kegExist.length && console.log(kegExist)
+          
+          that.spinner.start(`poin maksimal hari ini: ${maxPoin}. Total poin yg sudah dicapai: ${that.totalPoin}`)
           that.totalPoin < maxPoin && !kegExist.length && await that.inputKegiatan({ keg })
         }
       }
