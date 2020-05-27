@@ -1,4 +1,5 @@
 const { schedule } = require('node-cron')
-const runner = require('./runner')
+const run = require('./run-xvfb')
+// const runner = require('./runner')
 // schedule('*/30 * * * *', async () => await runner())
-schedule('33 6,15 * * *', async () => await runner())
+schedule('16 6,8,15 * * *', () => run())

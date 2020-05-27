@@ -1,3 +1,2 @@
-const runner = require('./runner')
-
-;(async () => await runner())()
+const run = require('./run-xvfb')
+run()

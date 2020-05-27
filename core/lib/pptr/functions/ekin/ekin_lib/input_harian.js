@@ -1,7 +1,8 @@
 exports._inputHarian = async ({ that, a, i }) => {
   let tglObj = that.tgl[a]
   let bln = Number(tglObj.blnNum)
-  let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLength < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
+  let maxPoin = Math.round(8500*( a == 0 ? (tglObj.tglLengthReal < 20 ? (tglObj.tglLength/tglObj.tglSum) : 1 ) : 1 ))
+  that.spinner.start(`poin maksimal hari ini: ${maxPoin}. Total poin yg sudah dicapai: ${that.totalPoin}`)
 
   let kegBlnBefore = 0
   let kegBlnAfter = 0
@@ -53,7 +54,6 @@ exports._inputHarian = async ({ that, a, i }) => {
           let kegExist = that.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg)
           // kegExist.length && console.log(kegExist)
           
-          that.spinner.start(`poin maksimal hari ini: ${maxPoin}. Total poin yg sudah dicapai: ${that.totalPoin}`)
           that.totalPoin < maxPoin && !kegExist.length && await that.inputKegiatan({ keg })
         }
       }

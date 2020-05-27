@@ -33,23 +33,33 @@ exports.getTgl = () => {
     const startOfMonth = moment().add(num, 'month').startOf('month')
     let endOfMonth = moment().add(num, 'month').endOf('month')
     let tglList = []
+    let blnLength = 0
     let tglLength = 0
     if (endOfMonth.isBefore(now)){
       now = endOfMonth
+    }
+    while(now.isBefore(endOfMonth)) {
+      if (endOfMonth.day() !== 0) {
+        blnLength++
+      }
+      endOfMonth = endOfMonth.add(-1, 'day')
     }
     while (startOfMonth.isBefore(now)) {
       if (now.day() !== 0) {
         tglList.push(now.format('DD/MM/YYYY'))
         tglLength++
+        blnLength++
       }
       now = now.clone().add(-1, 'day')
     }
-    now = endOfMonth
+    // now = endOfMonth
     if(bln === 'November'){
       bln = 'Nopember'
     }
     this.tgl[num] = {
       tglList,
+      blnLength,
+      tglLengthReal: tglLength,
       tglLength,
       tglSum: startOfMonth.daysInMonth(),
       bln: bln.toUpperCase(),
