@@ -18,10 +18,18 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan}) => {
       let wrapper = document.querySelector('div')
       let response = await fetch('/e-kinerja/v1/d_approve_realisasi_kegiatan/tabel_d_approve_realisasi_kegiatan', post)
       wrapper.insertAdjacentHTML('afterend', await response.text() )
-      let table = document.getElementById('tabel_d_approve_realisasi_kegiatan').querySelectorAll('tr')
+      let tabl = document.getElementById('tabel_d_approve_realisasi_kegiatan')
+      let table = []
+      if(tabl) {
+        table = tabl.querySelectorAll('tr')
+      }
       let response2 = await fetch('/e-kinerja/v1/d_approve_kegiatan_tambahan/tabel_d_approve_kegiatan_tambahan', post)
       wrapper.insertAdjacentHTML('afterend', await response2.text() )
-      let table2 = document.getElementById('tabel_d_approve_kegiatan_tambahan').querySelectorAll('tr')
+      let tabl2 = document.getElementById('tabel_d_approve_kegiatan_tambahan')
+      let table2 = []
+      if(tabl2){
+        table2 = tabl2.querySelectorAll('tr')
+      }
       acts = [...table, ...table2].reduce( (actsAcc, row) => {
         let actEl = row.getAttribute('ondblclick')
         if(actEl) {
