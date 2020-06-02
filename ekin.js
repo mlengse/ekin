@@ -11,8 +11,8 @@ module.exports = async () => {
     await ekin.init()
     // if(a === -1) {
     for( let i in ekin.users) {
-      for(let a of ekin.nums) {//if( a == 0 || (a == -1 && ekin.tglSkrg < 5 )) {
-        if( a === 0 && (i === 'anjang' || i === 'monic')) {
+      for(let a of ekin.nums) {
+        if( a === 0 && ekin.users[i].input) {
           await ekin.login( ekin.users[i] )
           await ekin.getKdSKP()
           await ekin.getKegTahun()
@@ -21,10 +21,11 @@ module.exports = async () => {
           await ekin.inputHarian({ a, i })
         }
         if( a == 0 || ( a == -1 
-          && ((( ekin.tglSkrg < 7 ) && ( i === 'yuni' || i === 'anjang' || i === 'wagimin')) 
-            || (( ekin.tglSkrg < 4 ) && ( i !== 'yuni' && i !== 'anjang' && i !== 'wagimin')))
+          && ((( ekin.tglSkrg < 7 ) && !ekin.users[i].early)
+            || (( ekin.tglSkrg < 4 ) && ekin.users[i].early))
           )) {
             await ekin.login( ekin.users[i] )
+            await ekin.fetchDataBulan()
             await ekin.getDataBawahan()
             await ekin.getLaporanTamsil({ a })
             await ekin.approveKegStaff( { a, i })

@@ -37,6 +37,5 @@ exports._login = async ({ that, nama, username, password }) => {
     that.spinner.succeed(`logged in user ${that.user.nl} ${that.user.jab}`)
     await that.page.reload(that.config.waitOpt)
   }
-  await that.fetchDataBulan()
 
 }

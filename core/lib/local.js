@@ -21,7 +21,10 @@ exports.getUser = () => {
   .pipe(csv({ separator: ';'}))
   .on('data', async (row) => {
     if(!this.users[row.nama]){
-      this.users[row.nama] = row
+      this.users[row.nama] = Object.assign({}, row, {
+        input: (row.input === 'true'),
+        early: (row.early === 'true')
+      })
     } 
   })
   .on('end', () => resolve(Object.keys(this.users).map( nama => this.users[nama]))))
