@@ -1,12 +1,12 @@
 const start = require('./start')
 const ekin = require('./ekin')
 
-module.exports = () => {
+module.exports = (isPM2) => {
   if(process.platform !== 'win32') {
     start('runner')
   } else {
     ;(async() => {
-      await ekin()
+      await ekin(isPM2)
     })()
   }
 }

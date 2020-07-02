@@ -1,7 +1,7 @@
 const exec = require('child_process').exec 
 
 module.exports = file => {
-  console.log(`Starting app for dev`)
+  console.log(`Starting app in xvfb`)
 
   const build = exec(`xvfb-run -a --server-args="-screen 0 1280x800x24 -ac -nolisten tcp -dpi 96 +extension RANDR" node ${file}.js`, { 
     stdio: 'inherit', windowsHide: true 

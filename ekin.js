@@ -6,7 +6,7 @@ const config = require('./config')
 
 const ekin = new Core(config)
 
-module.exports = async () => {
+module.exports = async isPM2 => {
   try {
     await ekin.init()
     // if(a === -1) {
@@ -37,10 +37,10 @@ module.exports = async () => {
       
       }
     }
-    await ekin.close()
+    await ekin.close(isPM2)
     console.log(`process done: ${new Date()}`)
   }catch(e){
-    ekin.close()
+    ekin.close(isPM2)
     console.error(e)
     console.error(`process error: ${new Date()}`)
   }

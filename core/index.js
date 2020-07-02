@@ -18,14 +18,18 @@ module.exports = class Core {
     return 76 + Math.floor(Math.random() * ( 90 -76 ))
   }
 
-  async close(){
+  async close(isPM2){
     this.spinner.stop()
     // if(this.page) {
     //   await this.page.close()
     // }
-    if(this.browser.isConnected()) {
-      await this.browser.disconnect()
-    }
+    if(!isPM2){
+      await this.browser.close()
+    } else {
+      if(this.browser.isConnected()) {
+        await this.browser.disconnect()
+      }
+    } 
     
   }
 
