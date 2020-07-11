@@ -1,5 +1,10 @@
 const { schedule } = require('node-cron')
 const run = require('./run-xvfb')
-// const runner = require('./runner')
-// schedule('*/30 * * * *', async () => await runner())
-schedule('16 6,8,15 * * *', () => run(true))
+const menit = Math.floor(Math.random() * 60)
+const jamPagi = 1 + Math.floor(Math.random() * 6)
+const jamSore = 15 + Math.floor(Math.random() * 6)
+console.log(`${menit} ${jamPagi},${jamSore} * * * ${new Date()}`)
+schedule(`${menit} ${jamPagi},${jamSore} * * *`, ()=>{
+	console.log(`running ekin ${new Date()}`)
+	run(true)
+})
