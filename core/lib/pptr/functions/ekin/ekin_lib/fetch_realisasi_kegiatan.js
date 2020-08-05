@@ -20,13 +20,13 @@ exports._fetchRealKeg = async ({ that, a, tgl }) => {
       if( !tabs[0]) {
         return {}
       }
-      let act = tabs[5].getAttribute('ontouchstart')
+      let act = tabs[21].getAttribute('ontouchstart')
       return {
-        tgl: tabs[0].textContent,
-        nmKeg: tabs[1].textContent,
-        tgtKuant: Number(tabs[2].textContent),
-        poin:Number(tabs[3].textContent),
-        status: tabs[4].textContent,
+        tgl: tabs[16].textContent,
+        nmKeg: tabs[17].textContent,
+        tgtKuant: Number(tabs[18].textContent),
+        poin:Number(tabs[19].textContent),
+        status: tabs[20].textContent,
         act: act && act.split('').reduce((a, i) => (a += i).split('\n').join('').split('  ').join(' '), ''),
       }
     }).filter( e => e.tgl /*&& e.tgl === tgl*/ )
