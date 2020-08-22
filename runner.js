@@ -1,5 +1,5 @@
 const ekin = require('./ekin')
 
 ;(async() => {
-  await ekin()
+  await ekin(false)
 })()

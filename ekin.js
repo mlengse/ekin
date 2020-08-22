@@ -20,14 +20,16 @@ module.exports = async isPM2 => {
           await ekin.fetchRealKeg({ a })
           await ekin.inputHarian({ a, i })
         }
-        if( a == 0 || ( a == -1 
+        if( ekin.users[i].kabeh || a === 0 || ( a === -1 
           && ((( ekin.tglSkrg < 7 ) && !ekin.users[i].early)
             || (( ekin.tglSkrg < 4 ) && ekin.users[i].early))
           )) {
             await ekin.login( ekin.users[i] )
             await ekin.fetchDataBulan()
             await ekin.getDataBawahan()
-            await ekin.getLaporanTamsil({ a })
+            if(!ekin.users[i].kabeh){
+              await ekin.getLaporanTamsil({ a })
+            }
             await ekin.approveKegStaff( { a, i })
           }
 

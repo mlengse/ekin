@@ -27,7 +27,7 @@ exports._getLaporanRealisasi = async ({that, dataBawahan, blnNum, thn}) => {
         acc.push(col.textContent.split('\n').join('').split('  ').join(''))
         return acc
       }, [])
-      if(text[5] && text[5].toLowerCase().includes('belum')){
+      if(text[5] /*&& text[5].toLowerCase().includes('belum')*/){
         actsAcc[text[0]] = {
           kode: text[0],
           nama: text[1],
@@ -39,6 +39,11 @@ exports._getLaporanRealisasi = async ({that, dataBawahan, blnNum, thn}) => {
       }
       return actsAcc
     }, {})
-    return acts
+
+    if(Object.keys(acts).length){
+      return acts
+    }
+    // acts.err = false
+    return table.textContent
   }, post)
 }

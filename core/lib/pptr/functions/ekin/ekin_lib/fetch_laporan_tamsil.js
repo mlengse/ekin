@@ -1,5 +1,6 @@
 exports._getLaporanTamsil = async ({that, a }) => {
   let { blnNum, thn } = that.tgl[a]
+  // console.log(blnNum, blnNum.toString(), thn)
   let satker = that.satker
   await that.getSatker()
   that.spinner.start(`fetch laporan tamsil staff ${that.user.nl}`)
@@ -50,9 +51,15 @@ exports._getLaporanTamsil = async ({that, a }) => {
   }
 
   let dataBawahan = that.users[that.user.nama].dataBawahan
+
+  console.log(dataBawahan)
   let indexNIPs = dataBawahan.map(({NIP_18}) => NIP_18 )
-  that.filteredTamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1 && Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
-  that.filteredTamsil.length && that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} dengan kinerja < 100%`)
+  that.filteredTamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1)
+  if(!that.config.ALL){
+    that.filteredTamsil = that.filteredTamsil.filter( tamsil => Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
+  }
+  // console.log(that.filteredTamsil)
+  that.filteredTamsil.length && that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} ${that.config.ALL ? '' : 'dengan kinerja < 100%'}`)
   return that.filteredTamsil
   
 }

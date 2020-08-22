@@ -1,5 +1,7 @@
 const moment = require('moment')
 moment.locale('id')
+
+exports.moment = moment
 exports.thnSKP = moment().add(-1, 'year').format('YYYY')
 exports.isApproveSKP = moment().add(-1, 'month').format('YYYY') === moment().add(-1, 'year').format('YYYY')
 exports.getDateString1 = e => moment(e, 'DD/MM/YYYY').format('YYYYMMDD')
@@ -23,7 +25,25 @@ exports._syncTglLibur =  async ({that}) => {
 }
 exports.tglSkrg = Number(moment().format('DD'))
 exports.thnSkrg = Number(moment().format('YYYY'))
-exports.nums = [-1, 0]
+
+let nums = [ 0, -1 ]
+let now = Number(moment().format('MM'))
+let t = 0
+let a = Number(moment().add(t, 'month').format('MM'))
+
+if( process.env.ALL ){
+  while( a <= now ) {
+    if(nums.indexOf(a-now) === -1){
+      nums.push(a-now)
+    }
+    t--
+    a = Number(moment().add(t, 'month').format('MM'))
+  }
+}
+
+// console.log(nums)
+
+exports.nums = nums//.reverse()
 exports.tgl = {}
 exports.getTgl = () => {
   for(let num of this.nums ) {
