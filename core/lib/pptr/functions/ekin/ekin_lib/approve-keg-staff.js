@@ -28,6 +28,7 @@ exports._approveKegStaff = async ({ that, a, i }) => {
     // }
 
     let maxPoin = max ? Math.round(max*( a == 0 ? (tglLengthReal < 20 ? (tglLength/tglSum) : 1 ) : 1 )) : false
+    // console.log(maxPoin)
     if(!tamsil.nip){
       tamsil.nip = tamsil.NIP_18
     }
@@ -46,8 +47,8 @@ exports._approveKegStaff = async ({ that, a, i }) => {
     if( (max && poin < maxPoin) || !max) {
       let acts = await that.getLaporanRealisasi({dataBawahan, blnNum, thn})
       while(!Object.keys(acts).length) {
-        console.log('reload getLaporanRealisasi and getDataApprovalBawahan')
-        console.log(acts)
+        that.spinner.start('reload getLaporanRealisasi and getDataApprovalBawahan')
+        // console.log(acts)
         acts = await that.getLaporanRealisasi({dataBawahan, blnNum, thn})
       }
 

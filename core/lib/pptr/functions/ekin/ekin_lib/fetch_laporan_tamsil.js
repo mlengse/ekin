@@ -52,7 +52,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
 
   let dataBawahan = that.users[that.user.nama].dataBawahan
 
-  console.log(dataBawahan)
+  // console.log(dataBawahan)
   let indexNIPs = dataBawahan.map(({NIP_18}) => NIP_18 )
   that.filteredTamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1)
   if(!that.config.ALL){

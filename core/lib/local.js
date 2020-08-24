@@ -3,18 +3,18 @@ const fs = require('fs');
 
 exports.plans = {}
 exports.users = {}
-// exports.getPlan = () => {
-//   return new Promise( resolve => fs.createReadStream('./db/rencana.csv')
-//   .pipe(csv({ separator: ','}))
-//   .on('data', async row => {
-//     for(let pr in row) if(!row[pr].length) delete row[pr]
-//     if(!this.plans[row.no]){
-//       this.plans[row.no] = row
-//     } 
-//   })
-//   .on('end', () => resolve(Object.keys(this.plans).map( no => this.plans[no]))))
-// 
-// }
+exports.getPlan = () => {
+  return new Promise( resolve => fs.createReadStream('./db/rencana.csv')
+  .pipe(csv({ separator: ','}))
+  .on('data', async row => {
+    for(let pr in row) if(!row[pr].length) delete row[pr]
+    if(!this.plans[row.no]){
+      this.plans[row.no] = row
+    } 
+  })
+  .on('end', () => resolve(Object.keys(this.plans).map( no => this.plans[no]))))
+
+}
 
 exports.getUser = () => {
   return new Promise( resolve => fs.createReadStream('./db/user.csv')

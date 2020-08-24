@@ -37,7 +37,7 @@ module.exports = class Core {
 
     this.getTgl()
     this.getUser()
-    // this.getPlan()
+    this.getPlan()
 
     await this.browserInit()
     await this.syncTglLibur()
