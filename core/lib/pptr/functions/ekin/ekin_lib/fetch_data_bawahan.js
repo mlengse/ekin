@@ -14,7 +14,7 @@ exports._getDataBawahan = async ({ that }) => {
       return res.data
     })
 
-    that.users[that.user.nama].dataBawahanObj = that.users[that.user.nama].dataBawahan.reduce((datObj, row) => {
+    that.user.dataBawahanObj = that.users[that.user.nama].dataBawahan.reduce((datObj, row) => {
       datObj[row.NIP_18] = row
       return datObj
     }, {})

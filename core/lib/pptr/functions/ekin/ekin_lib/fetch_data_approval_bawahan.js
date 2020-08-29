@@ -3,8 +3,11 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
     that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
 
     // console.log(that.users[i].dataBawahanObj[dataBawahan.NIP_18])
+    if(!that.user.dataBawahanObj || (that.user.dataBawahanObj && !that.user.dataBawahanObj[dataBawahan.NIP_18])){
+      await that.getDataBawahan()
+    }
 
-    let approval = that.users[i].dataBawahanObj[dataBawahan.NIP_18].approval
+    let approval = that.user.dataBawahanObj[dataBawahan.NIP_18].approval
 
     if(!approval){
 
@@ -60,7 +63,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
 
       // console.log(acts)
 
-      that.users[i].dataBawahanObj[dataBawahan.NIP_18].approval = appr
+      that.user.dataBawahanObj[dataBawahan.NIP_18].approval = appr
       approval = appr
 
     }
