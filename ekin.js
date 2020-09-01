@@ -21,7 +21,7 @@ module.exports = async isPM2 => {
           await ekin.inputHarian({ a, i })
         }
         if( ekin.users[i].kabeh || a === 0 || ( a === -1 
-          && ((( ekin.tglSkrg < 7 ) && !ekin.users[i].early)
+          && ((( ekin.tglSkrg < 5 ) && !ekin.users[i].early)
             || (( ekin.tglSkrg < 4 ) && ekin.users[i].early))
           )) {
             await ekin.login( ekin.users[i] )

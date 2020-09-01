@@ -14,10 +14,10 @@ exports._getDataBawahan = async ({ that }) => {
       return res.data
     })
 
-    that.user.dataBawahanObj = that.users[that.user.nama].dataBawahan.reduce((datObj, row) => {
+    that.dataBawahanObj = Object.assign({}, that.dataBawahanObj, that.users[that.user.nama].dataBawahan.reduce((datObj, row) => {
       datObj[row.NIP_18] = row
       return datObj
-    }, {})
+    }, {}))
 
     that.spinner.succeed(`${that.users[that.user.nama].dataBawahan.length} data staff dari ${that.user.nl}`)
 

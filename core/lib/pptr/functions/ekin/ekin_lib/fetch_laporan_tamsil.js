@@ -3,7 +3,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
   // console.log(blnNum, blnNum.toString(), thn)
   let satker = that.satker
   await that.getSatker()
-  that.spinner.start(`fetch laporan tamsil staff ${that.user.nl}`)
+  that.spinner.start(`fetch laporan tamsil staff ${that.user.nl} bln ${blnNum} ${thn}`)
   if(that.satker !== satker) {
     let post = {
       method: 'POST',
