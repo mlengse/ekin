@@ -12,7 +12,8 @@ module.exports = async isPM2 => {
     // if(a === -1) {
     for( let i in ekin.users) {
       for(let a of ekin.nums) {
-        if( a === 0 && ekin.users[i].input) {
+        // console.log(ekin.users[i].input)
+        if( (a === 0 || (a === -1 && ekin.tglSkrg < 3 )) && ekin.users[i].input) {
           await ekin.login( ekin.users[i] )
           await ekin.getKdSKP()
           await ekin.getKegTahun()
@@ -21,7 +22,7 @@ module.exports = async isPM2 => {
           await ekin.inputHarian({ a, i })
         }
         if( ekin.users[i].kabeh || a === 0 || ( a === -1 
-          && ((( ekin.tglSkrg < 5 ) && !ekin.users[i].early)
+          && ((( ekin.tglSkrg < 6 ) && !ekin.users[i].early)
             || (( ekin.tglSkrg < 4 ) && ekin.users[i].early))
           )) {
             await ekin.login( ekin.users[i] )
@@ -30,12 +31,12 @@ module.exports = async isPM2 => {
             if(!ekin.users[i].kabeh){
               await ekin.getLaporanTamsil({ a })
             }
-            // await ekin.approveKegStaff( { a, i })
+            await ekin.approveKegStaff( { a, i })
           }
 
-          // if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
-          //   await ekin.approveSKPStaff({ i })
-          // }
+        // if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
+        //   await ekin.approveSKPStaff({ i })
+        // }
       
       }
     }

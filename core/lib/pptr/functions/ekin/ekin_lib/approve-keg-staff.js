@@ -55,7 +55,7 @@ exports._approveKegStaff = async ({ that, a, i }) => {
         let actsArr = {}
 
         while(!Array.isArray(actsArr)){
-          actsArr = await that.getDataApprovalBawahan({acts, dataBawahan, i})
+          actsArr = await that.getDataApprovalBawahan({acts, dataBawahan, i, a})
         }
   
         while(actsArr.length && ( (max && poin < maxPoin) || !max)) {

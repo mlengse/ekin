@@ -1,4 +1,4 @@
-exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
+exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i, a}) => {
   if(Object.keys(acts).length) {
     that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
 
@@ -7,9 +7,9 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
       await that.getDataBawahan()
     }
 
-    // let approval = that.dataBawahanObj[dataBawahan.NIP_18].approval
+    let approval = that.dataBawahanObj[dataBawahan.NIP_18].approval
 
-    // if(!approval){
+    if(!approval || a !== 0){
 
       let post = {
         method: 'POST',
@@ -66,7 +66,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
       that.dataBawahanObj[dataBawahan.NIP_18].approval = appr
       approval = appr
 
-    // }
+    }
 
     // console.log(that.users[i].dataBawahanObj[dataBawahan.NIP_18])
 
