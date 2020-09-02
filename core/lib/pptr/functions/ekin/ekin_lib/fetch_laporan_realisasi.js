@@ -43,6 +43,7 @@ exports._getLaporanRealisasi = async ({that, dataBawahan, blnNum, thn}) => {
     if(Object.keys(acts).length){
       return acts
     }
+    // return {}
     // acts.err = false
     return table.textContent
   }, post)

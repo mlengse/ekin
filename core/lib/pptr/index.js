@@ -5,12 +5,12 @@ exports.pptr = require('puppeteer')
 exports.spinner =(process.platform === 'win32' && !process.env.NODE_APP_INSTANCE) ? ora({
   stream: process.stdout
 }): {
-  start: _ => '',
+  start: text => console.log('start:', text),
   stop: _ => '',
-  succeed: text => console.log(text),
-  warn: text => console.info(text),
-  info: text => console.info(text),
-  fail: text => console.error(text)
+  succeed: text => console.log('succeed:', text),
+  warn: text => console.info('warn:', text),
+  info: text => console.info('info:', text),
+  fail: text => console.error('fail:', text)
 }
 exports._browserInit = async ({ that }) => {
 

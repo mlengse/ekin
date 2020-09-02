@@ -30,7 +30,7 @@ module.exports = async isPM2 => {
             if(!ekin.users[i].kabeh){
               await ekin.getLaporanTamsil({ a })
             }
-            await ekin.approveKegStaff( { a, i })
+            // await ekin.approveKegStaff( { a, i })
           }
 
           // if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){

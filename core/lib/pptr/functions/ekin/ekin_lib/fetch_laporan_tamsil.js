@@ -4,7 +4,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
   let satker = that.satker
   await that.getSatker()
   that.spinner.start(`fetch laporan tamsil staff ${that.user.nl} bln ${blnNum} ${thn}`)
-  if(that.satker !== satker) {
+  // if(that.satker !== satker) {
     let post = {
       method: 'POST',
       headers: {
@@ -48,7 +48,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
       }, [])
       return acts
     }, post)
-  }
+  // }
 
   let dataBawahan = that.users[that.user.nama].dataBawahan
 
@@ -59,7 +59,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
     that.filteredTamsil = that.filteredTamsil.filter( tamsil => Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
   }
   // console.log(that.filteredTamsil)
-  that.filteredTamsil.length && that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} ${that.config.ALL ? '' : 'dengan kinerja < 100%'}`)
+  that.filteredTamsil.length && that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} bln ${blnNum} ${thn} dengan kinerja < 100%`)
   return that.filteredTamsil
   
 }

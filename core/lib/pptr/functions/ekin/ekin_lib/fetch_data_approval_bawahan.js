@@ -82,7 +82,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i}) => {
 
     let actsArr = Object.keys(acts).map(e => acts[e]).filter( e => e.stat && e.stat.toLowerCase().includes('belum'))
 
-    console.log(actsArr)
+
 
     // if(acts[Object.keys(acts)[0]]) {
     //   console.log(acts[Object.keys(acts)[0]])

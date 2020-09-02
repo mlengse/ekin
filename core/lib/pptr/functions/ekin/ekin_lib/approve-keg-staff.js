@@ -46,22 +46,27 @@ exports._approveKegStaff = async ({ that, a, i }) => {
     })
     if( (max && poin < maxPoin) || !max) {
       let acts = await that.getLaporanRealisasi({dataBawahan, blnNum, thn})
-      while(!Object.keys(acts).length) {
+      while(!Object.keys(acts).length ) {
         that.spinner.start('reload getLaporanRealisasi and getDataApprovalBawahan')
-        // console.log(acts)
         acts = await that.getLaporanRealisasi({dataBawahan, blnNum, thn})
       }
 
-      let actsArr = {}
+      if(typeof acts !== 'string') {
+        let actsArr = {}
 
-      while(!Array.isArray(actsArr)){
-        actsArr = await that.getDataApprovalBawahan({acts, dataBawahan, i})
+        while(!Array.isArray(actsArr)){
+          actsArr = await that.getDataApprovalBawahan({acts, dataBawahan, i})
+        }
+  
+        while(actsArr.length && ( (max && poin < maxPoin) || !max)) {
+          let act = actsArr.shift()
+          poin = await that.approve({ act, poin })
+        }
+  
       }
 
-      while(actsArr.length && ( (max && poin < maxPoin) || !max)) {
-        let act = actsArr.shift()
-        poin = await that.approve({ act, poin })
-      }
+      // console.log(acts)
+
     }
   }
 }
