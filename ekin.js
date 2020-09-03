@@ -23,7 +23,7 @@ module.exports = async isPM2 => {
         }
         if( ekin.users[i].kabeh || a === 0 || ( a === -1 
           && ((( ekin.tglSkrg < 6 ) && !ekin.users[i].early)
-            || (( ekin.tglSkrg < 4 ) && ekin.users[i].early))
+            || (( ekin.tglSkrg < 3 ) && ekin.users[i].early))
           )) {
             await ekin.login( ekin.users[i] )
             await ekin.fetchDataBulan()
