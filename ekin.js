@@ -43,7 +43,7 @@ const ekinProcess = async ekin => {
     }
   
   }catch(e){
-    console.error(e)
+    console.error(JSON.stringify(e))
     console.error(`process error: ${new Date()}`)
     await ekinProcess(ekin)
   }
