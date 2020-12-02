@@ -7,8 +7,10 @@ exports._fetchKegSKP = async ({ that, kegSKP }) => {
     },
     type: 'POST',
   }
-  let res = await that.page.evaluate(async post => {
-    return await $.ajax(post)
-  }, post)
+  let res = await that.evalTimedOut({
+    evalFunc: [async post => {
+      return await $.ajax(post)
+    }, post]
+  })
   return Object.assign({}, kegSKP, JSON.parse(res).data[0])
 }

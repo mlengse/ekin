@@ -1,3 +1,5 @@
+const { _evalTimedOut } = require("../../..")
+
 exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i, a}) => {
   if(Object.keys(acts).length) {
     that.spinner.start(`fetch data approval dari ${Object.keys(acts).length} laporan realisasi ${dataBawahan.NAMA}`)
@@ -26,7 +28,7 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i, a}) => {
 
       // that.spinner.start(`fetch data approval from server`)
 
-      let appr = await that.page.evaluate(async (acts, post) => {
+      let appr = await that.evalTimedOut({ evalFunc: [async (acts, post) => {
         let wrapper = document.querySelector('div')
         let response = await fetch('/e-kinerja/v1/d_approve_realisasi_kegiatan/tabel_d_approve_realisasi_kegiatan', post)
         wrapper.insertAdjacentHTML('afterend', await response.text() )
@@ -48,20 +50,14 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i, a}) => {
             let act = actEl.split('\n').map(e=>e.trim()).join('')
             if(act.includes('\t')){ act = act.split('\t').join('')}
             if(act.includes('\\')){ act = act.split('\\').join('')}
-            // for(let kode in  actsAcc) {
-              // if(act.includes(kode) && act.slice(-1) === ')'){
-                // actsAcc[kode].act = act
-              // }
-            // }
-             actsAcc.push(act)
+            actsAcc.push(act)
           }
           return actsAcc
         }, acts)
         return acts
-      }, [], post )
+      }, [], post]})
 
       // console.log(acts)
-
 
       that.dataBawahanObj[dataBawahan.NIP_18].approval = appr
       approval = appr

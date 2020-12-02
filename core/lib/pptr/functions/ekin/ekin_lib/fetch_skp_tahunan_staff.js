@@ -9,32 +9,34 @@ exports._fetchSKPTahunanStaff = async({ that, dataBawahan}) => {
       NIP: dataBawahan.NIP_18
     }
   }
-  let skpBawahan = await that.page.evaluate(async post => {
-    let el = document.getElementById('report_tabel_laporan_skp')
-    if(!el){
-      el = document.createElement('div')
-      el.id = 'report_tabel_laporan_skp'
-      document.body.appendChild(el)
-    }
-    el.innerHTML = await $.ajax(post)
-    return [...document.getElementById('tabel_d_kegiatan_tahun').querySelectorAll('tr')].reduce((accRow, row) => {
-      let o = [...row.querySelectorAll('td')].reduce((acc, td, i) => {
-        td.textContent ? acc[Object.keys(acc)[i]] = td.textContent : null
-        return acc
-      }, {
-        kodeKegSKP: null,
-        thnSKP: null,
-        kegSKP: null,
-        tgtKuantitas: null,
-        tgtWaktu: null,
-        status: null
-      })
-      if(o.kodeKegSKP){
-        accRow.push(o)
+  let skpBawahan = await that.evalTimedOut({
+    evalFunc: [async post => {
+      let el = document.getElementById('report_tabel_laporan_skp')
+      if(!el){
+        el = document.createElement('div')
+        el.id = 'report_tabel_laporan_skp'
+        document.body.appendChild(el)
       }
-      return accRow
-    }, [])
-  }, post)
+      el.innerHTML = await $.ajax(post)
+      return [...document.getElementById('tabel_d_kegiatan_tahun').querySelectorAll('tr')].reduce((accRow, row) => {
+        let o = [...row.querySelectorAll('td')].reduce((acc, td, i) => {
+          td.textContent ? acc[Object.keys(acc)[i]] = td.textContent : null
+          return acc
+        }, {
+          kodeKegSKP: null,
+          thnSKP: null,
+          kegSKP: null,
+          tgtKuantitas: null,
+          tgtWaktu: null,
+          status: null
+        })
+        if(o.kodeKegSKP){
+          accRow.push(o)
+        }
+        return accRow
+      }, [])
+    }, post]
+  })
   // that.spinner.succeed(`${skpBawahan.length} keg SKP ${that.thnSKP} ${dataBawahan.NAMA}`)
   
   return skpBawahan.map( e=> Object.assign({}, dataBawahan, e))

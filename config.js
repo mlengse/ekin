@@ -6,16 +6,16 @@ let pptrOpt = {}
 // console.log(process.platform)
 if(process.platform === 'win32' || CHROME_PATH ) {
   pptrOpt = {
-    headless: true,
-    // headless: false,
+    // headless: true,
+    headless: false,
     executablePath: `${CHROME_PATH}`, 
     userDataDir: `${USER_DATA_PATH}`,
     args: [
-      // '--content-shell-hide-toolbar',
-      // '--hide',
-      // '--hide-scrollbars',
-      // '--window-position=0,0',
-      // '--window-size=0,0'
+      '--content-shell-hide-toolbar',
+      '--hide',
+      '--hide-scrollbars',
+      '--window-position=0,0',
+      '--window-size=0,0'
     ]
   }
 } else {

@@ -30,7 +30,7 @@ module.exports = class Core {
         await this.browser.disconnect()
       }
     } 
-    
+    console.log(`process done: ${new Date()}`)
   }
 
   async init() {

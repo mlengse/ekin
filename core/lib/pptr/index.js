@@ -1,6 +1,12 @@
 const delay = require('delay')
 const ora = require('ora')
 
+exports._evalTimedOut = async({ that, evalFunc }) => await Promise.race([
+  that.page.evaluate(...evalFunc),
+  that.page.waitFor(30000).then(() => Promise.reject('time out 30 detik'))
+]);
+
+
 exports.pptr = require('puppeteer')
 exports.spinner =(process.platform === 'win32' && !process.env.NODE_APP_INSTANCE) ? ora({
   stream: process.stdout

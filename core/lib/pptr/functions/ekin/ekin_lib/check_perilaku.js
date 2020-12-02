@@ -7,7 +7,7 @@ exports._checkPerilaku = async({ that, dataBawahan }) => {
       KD_SKP: dataBawahan.kodeSKP
     }
   }
-  return that.page.evaluate(async post => {
+  return that.evalTimedOut({ evalFunc: [async post => {
     let el = document.getElementById('report_tabel_nilai_perilaku')
     if(!el){
       el = document.createElement('div')
@@ -21,5 +21,5 @@ exports._checkPerilaku = async({ that, dataBawahan }) => {
       }
       return accRow
     }, {})
-  }, post)
+  }, post]})
 }
