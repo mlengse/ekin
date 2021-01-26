@@ -5,6 +5,7 @@ exports.moment = moment
 exports.thnSKP = moment().add(-1, 'year').format('YYYY')
 exports.isApproveSKP = moment().add(-1, 'month').format('YYYY') === moment().add(-1, 'year').format('YYYY')
 exports.getDateString1 = e => moment(e, 'DD/MM/YYYY').format('YYYYMMDD')
+exports.getDateString2 = e => moment(e, 'DD/MM/YYYY').format('YYYY-MM-DD')
 exports._syncTglLibur =  async ({that}) => {
   that.spinner.start('sync tanggal libur')
   for(let t in that.tgl){
@@ -26,14 +27,14 @@ exports._syncTglLibur =  async ({that}) => {
 exports.tglSkrg = Number(moment().format('DD'))
 exports.thnSkrg = Number(moment().format('YYYY'))
 
-let nums = [ 0, -1 ]
+let nums = [ -1, 0 ]
 let now = Number(moment().format('MM'))
 let t = 0
 let a = Number(moment().add(t, 'month').format('MM'))
 
 if( process.env.ALL ){
   while( a <= now ) {
-    if(nums.indexOf(a-now) === -1){
+    if(nums.indexOf(a-now) !== 0){
       nums.push(a-now)
     }
     t--

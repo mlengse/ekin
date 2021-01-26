@@ -2,12 +2,12 @@ exports._checkPerilaku = async({ that, dataBawahan }) => {
   that.spinner.start('check perilaku')
   let post = {
     type: "POST",
-    url: "/e-kinerja/v1/d_approve_skp/perilaku_pegawai",
+    url: "/e-kinerja2/v2/d_approve_skp/perilaku_pegawai",
     data: {
       KD_SKP: dataBawahan.kodeSKP
     }
   }
-  return that.evalTimedOut({ evalFunc: [async post => {
+  return that.page.evaluate( async post => {
     let el = document.getElementById('report_tabel_nilai_perilaku')
     if(!el){
       el = document.createElement('div')
@@ -21,5 +21,5 @@ exports._checkPerilaku = async({ that, dataBawahan }) => {
       }
       return accRow
     }, {})
-  }, post]})
+  }, post)
 }

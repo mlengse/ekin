@@ -9,6 +9,7 @@ exports._approveSKPStaff = async ({ that, i }) => {
           kegSKP = await that.fetchKegSKP({kegSKP})
           if( !kegSKP.TARGET_KUALITAS_R ) {
             kegSKP.TARGET_KUALITAS_R = that.getKualitasRand()
+            // console.log(kegSKP)
             await that.inputKualitas({ kegSKP })                
           }
         }

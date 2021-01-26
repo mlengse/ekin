@@ -5,11 +5,28 @@ const Core = require('./core')
 const config = require('./config')
 const ekin = new Core(config)
 
+if (!('toJSON' in Error.prototype))
+Object.defineProperty(Error.prototype, 'toJSON', {
+    value: function () {
+        var alt = {};
+
+        Object.getOwnPropertyNames(this).forEach(function (key) {
+            alt[key] = this[key];
+        }, this);
+
+        return alt;
+    },
+    configurable: true,
+    writable: true
+});
+
 const ekinProcess = async ekin => {
+  // console.log(ekin.usersArr)
   try{
   // if(a === -1) {
     while(ekin.usersArr.length) {
       let i = ekin.usersArr[0].nama
+      // console.log(ekin.users[i])
     // for( let i in ekin.users) {
       for(let a of ekin.nums) {
         // console.log(ekin.users[i].input)
@@ -28,16 +45,15 @@ const ekinProcess = async ekin => {
             await ekin.login( ekin.users[i] )
             await ekin.fetchDataBulan()
             await ekin.getDataBawahan()
-            if(!ekin.users[i].kabeh){
-              await ekin.getLaporanTamsil({ a })
-            }
-            await ekin.approveKegStaff( { a, i })
+            // if(!ekin.users[i].kabeh){
+            await ekin.getLaporanTamsil({ a })
+            // }
+
+            await ekin.rebootIfErr( ekin.approveKegStaff, { a, i })
           }
-  
-        // if(i !== 'nur' && !!ekin.users[i].dataBawahan.length && ekin.isApproveSKP){
-        //   await ekin.approveSKPStaff({ i })
-        // }
-      
+      }
+      if((ekin.users[i].dataBawahan && !!ekin.users[i].dataBawahan.length) && ekin.isApproveSKP && ekin.users[i].skp){
+        await ekin.approveSKPStaff({ i })
       }
       ekin.usersArr.shift()
     }

@@ -11,7 +11,7 @@ exports._inputPerilaku = async ({ that, dataBawahan }) => {
   }
   let res = await that.page.evaluate( async data => {
     return $.ajax({
-      url  : "/e-kinerja/v1/d_approve_skp/insert_perilaku",
+      url  : "/e-kinerja2/v2/d_approve_skp/insert_perilaku",
       type : "POST",
       data 
     })

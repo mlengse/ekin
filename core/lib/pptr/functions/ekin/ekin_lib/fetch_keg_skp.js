@@ -1,7 +1,7 @@
 exports._fetchKegSKP = async ({ that, kegSKP }) => {
   that.spinner.start(`fetch keg SKP ${that.thnSKP} ${kegSKP.NAMA} kode ${kegSKP.kodeSKP} ${kegSKP.kegSKP}`)
   let post = {
-    url : '/e-kinerja/v1/d_realisasi_skp/get_data_kegiatan',
+    url : '/e-kinerja2/v2/d_realisasi_skp/get_data_kegiatan',
     data: {
       KD_KEGIATAN_TAHUN : kegSKP.kodeKegSKP
     },

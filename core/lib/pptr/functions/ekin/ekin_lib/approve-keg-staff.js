@@ -5,30 +5,21 @@ exports._approveKegStaff = async ({ that, a, i }) => {
     max = false
   }
   that.spinner.start('approveKegStaff')
-  // if( i === 'nur'){
-    // max =7500
-  // }
   let indexNIPs = that.users[i].dataBawahan.map(({NIP_18}) => NIP_18 )
 
-
   let arr = []
-  if(that.filteredTamsil){
+  if(that.filteredTamsil.length){
     arr = that.filteredTamsil
-  } else {
-    arr = that.users[i].dataBawahan
+  }
+  
+  if(that.users[i].kabeh){
+    arr = that.tamsil
   }
 
-  // let tamsil = arr[0] 
-
   for(tamsil of arr){
-    // if(tamsil.nip === '197910062003122006') {
-    //   max = 7900
-    // } else {
-    //   max = 8500
-    // }
 
     let maxPoin = max ? Math.round(max*( a == 0 ? (tglLengthReal < 20 ? (tglLength/tglSum) : 1 ) : 1 )) : false
-    // console.log(maxPoin)
+
     if(!tamsil.nip){
       tamsil.nip = tamsil.NIP_18
     }
@@ -44,7 +35,9 @@ exports._approveKegStaff = async ({ that, a, i }) => {
       poin,
       persen: tamsil.kinerjaPersen ? Number(parseFloat(tamsil.kinerjaPersen)/100) : 0
     })
+
     if( (max && poin < maxPoin) || !max) {
+
       let acts = await that.getLaporanRealisasi({dataBawahan, blnNum, thn})
       while(!Object.keys(acts).length ) {
         that.spinner.start('reload getLaporanRealisasi and getDataApprovalBawahan')
@@ -52,6 +45,7 @@ exports._approveKegStaff = async ({ that, a, i }) => {
       }
 
       if(typeof acts !== 'string') {
+        // console.log(acts)
         let actsArr = {}
 
         while(!Array.isArray(actsArr)){
@@ -65,7 +59,6 @@ exports._approveKegStaff = async ({ that, a, i }) => {
   
       }
 
-      // console.log(acts)
 
     }
   }

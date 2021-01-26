@@ -7,7 +7,7 @@ exports._fetchDataBulan = async({ that }) => {
         if(localStorage){
           await $.ajax({
             type: "POST",
-            url: "/e-kinerja/v1/layout/data_bulan",
+            url: "/e-kinerja2/v2/layout/data_bulan",
             success: (data) => localStorage.setItem("data_bulan", data)           
           })
           return JSON.parse(localStorage.getItem('data_bulan'))

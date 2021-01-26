@@ -15,7 +15,18 @@ module.exports = class Core {
   }
 
   getKualitasRand(){
-    return 76 + Math.floor(Math.random() * ( 90 -76 ))
+    return 86 + Math.floor(Math.random() * ( 96 - 86 ))
+  }
+
+  async rebootIfErr(procc, arrgs) {
+    try {
+      await procc(arrgs)
+    } catch(e) {
+      console.error(JSON.stringify(e))
+      console.error(`process error: ${new Date()}`)
+      await procc(arrgs)
+    }
+
   }
 
   async close(isPM2){

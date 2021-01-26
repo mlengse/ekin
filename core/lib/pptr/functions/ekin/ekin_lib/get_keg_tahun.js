@@ -4,7 +4,7 @@ exports._getKegTahun = async({ that }) => {
     evalFunc: [async KD_SKP => {
       let response = await $.ajax({
         type: "POST",
-        url: "/e-kinerja/v1/d_kegiatan_bulan/tabel_d_kegiatan_tahun",
+        url: "/e-kinerja2/v2/d_kegiatan_bulan/tabel_d_kegiatan_tahun",
         data: { KD_SKP }
       })
       let el = document.getElementById('report_tabel_d_kegiatan_tahun')

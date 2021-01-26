@@ -11,7 +11,7 @@ exports._fetchRealKeg = async ({ that, a, tgl }) => {
       document.body.appendChild(reportReal)
       document.getElementById('report_tabel_d_realisasi_kegiatan').innerHTML = await $.ajax({
         type: "POST",
-        url: "/e-kinerja/v1/d_realisasi_kegiatan/tampil",
+        url: "/e-kinerja2/v2/d_realisasi_kegiatan/tampil",
         data: {
           TGL_REALISASI: tgl,
           STATUS: "S"

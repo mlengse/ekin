@@ -8,6 +8,7 @@ exports._inputHarian = async ({ that, a, i }) => {
   let kegBlnAfter = 0
   // console.log(that.plans)
   for(let p in that.plans) {
+    // console.log(p)
     let plan = that.plans[p]
     let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
     let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
@@ -32,13 +33,13 @@ exports._inputHarian = async ({ that, a, i }) => {
   if(kegBlnAfter > kegBlnBefore) { await that.getKegBulan({ a }) }
 
 
-  for(let p in that.plans) {
-    let plan = that.plans[p]
-    // let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
-    let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
-    if(plan[bln] && kegBln.length ) {
-      if(kegBln[0].tgtKuant > 1 ) {
-        for(let tgl of tglObj.tglList) {
+  for(let tgl of tglObj.tglList) {
+    for(let p in that.plans) {
+      let plan = that.plans[p]
+      // let kegThn = that.kegTahun.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+      let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
+      if(plan[bln] && kegBln.length ) {
+        if(kegBln[0].tgtKuant > 1 ) {
           let actvs = that.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
           let tglSum = tglObj.tglSum
           let tglLength = tglObj.tglLength

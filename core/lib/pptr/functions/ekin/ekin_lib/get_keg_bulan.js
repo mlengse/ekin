@@ -5,7 +5,7 @@ exports._getKegBulan = async ({ that, a }) => {
     evalFunc: [async bln => {
       let response = await $.ajax({
         type: "POST",
-        url: "/e-kinerja/v1/d_kegiatan_bulan/tabel_d_kegiatan_bulan"
+        url: "/e-kinerja2/v2/d_kegiatan_bulan/tabel_d_kegiatan_bulan"
       })
       let el = document.getElementById('report_tabel_d_kegiatan_bulan')
       if(!el){

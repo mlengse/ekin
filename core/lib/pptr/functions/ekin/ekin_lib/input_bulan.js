@@ -21,7 +21,7 @@ exports._inputBln = async ({ that, act, blnNum, kuant }) => {
       eval(act)
       let dataKd = await $.ajax({
         type: "POST",
-        url: "/e-kinerja/v1/d_kegiatan_bulan/buat_kode_d_kegiatan_bulan"
+        url: "/e-kinerja2/v2/d_kegiatan_bulan/buat_kode_d_kegiatan_bulan"
       })
       if(dataKd){
         dataKd = JSON.parse(dataKd);
@@ -30,7 +30,7 @@ exports._inputBln = async ({ that, act, blnNum, kuant }) => {
           $("#KD_KEGIATAN_BULAN").val(kd_kegiatan_bulan);
           let dataSmp = await $.ajax({
             type: 'POST',
-            url: "/e-kinerja/v1/d_kegiatan_bulan/simpan",
+            url: "/e-kinerja2/v2/d_kegiatan_bulan/simpan",
             data: $("#form_d_kegiatan_bulan").serialize(),
           })
           dataSmp = JSON.parse(dataSmp)

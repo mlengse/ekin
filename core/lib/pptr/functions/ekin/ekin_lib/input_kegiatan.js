@@ -5,7 +5,7 @@ exports._inputKegiatan = async({ that, keg }) => {
     $("#KD_BULAN").html(opt);
     let dataKd = await $.ajax({
       type: "POST",
-      url: "/e-kinerja/v1/d_realisasi_kegiatan/buat_kode_d_realisasi_kegiatan",
+      url: "/e-kinerja2/v2/d_realisasi_kegiatan/buat_kode_d_realisasi_kegiatan",
     })
     if(dataKd){
       dataKd = JSON.parse(dataKd);
@@ -28,7 +28,7 @@ exports._inputKegiatan = async({ that, keg }) => {
         eval(keg.act)
         let dataSmp = await $.ajax({
           type: "POST",
-          url: "/e-kinerja/v1/d_realisasi_kegiatan/simpan",
+          url: "/e-kinerja2/v2/d_realisasi_kegiatan/simpan",
           data
         })
         dataSmp = JSON.parse(dataSmp)

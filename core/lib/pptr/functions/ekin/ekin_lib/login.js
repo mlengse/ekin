@@ -21,7 +21,7 @@ exports._login = async ({ that, nama, username, password }) => {
       PASSWORD: password
     })
     let res = await that.page.evaluate(async body => {
-      let res = await fetch('/e-kinerja/v1/login/cek_login', {
+      let res = await fetch('/e-kinerja2/v2/login/cek_login', {
         method: 'POST',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",                                                                                                
@@ -31,6 +31,8 @@ exports._login = async ({ that, nama, username, password }) => {
       })
       return res.json()
     }, body)
+
+    // console.log(res)
     that.isLogin = res.status
     await that.page.reload(that.config.waitOpt)
     await that.getUserLogin()

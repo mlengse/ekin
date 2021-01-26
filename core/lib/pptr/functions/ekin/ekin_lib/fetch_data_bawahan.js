@@ -4,7 +4,7 @@ exports._getDataBawahan = async ({ that }) => {
     that.spinner.start(`fetch data staff ${that.user.nl}`)
     that.users[that.user.nama].dataBawahan = await that.evalTimedOut({ 
       evalFunc: [async() => {
-        let response = await fetch('/e-kinerja/v1/layout/data_bawahan', {
+        let response = await fetch('/e-kinerja2/v2/layout/data_bawahan', {
           method: 'POST',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",                                                                                                

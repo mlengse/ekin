@@ -3,7 +3,7 @@ exports._fetchSKPStaff = async({ that, dataBawahan}) => {
 
   let post = {
     type: "POST",
-    url: "/e-kinerja/v1/d_approve_skp/daftar_skp_tahun",
+    url: "/e-kinerja2/v2/d_approve_skp/daftar_skp_tahun",
     data: {
       KD_TAHUN: that.thnSKP, 
       NIP: dataBawahan.NIP_18

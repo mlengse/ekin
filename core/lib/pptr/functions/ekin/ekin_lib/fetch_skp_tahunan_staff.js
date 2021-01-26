@@ -2,7 +2,7 @@ exports._fetchSKPTahunanStaff = async({ that, dataBawahan}) => {
   that.spinner.start(`fetch SKP ${that.thnSKP} ${dataBawahan.NAMA} kode ${dataBawahan.kodeSKP}`)
   let post = {
     type: "POST",
-    url: "/e-kinerja/v1/d_approve_skp/tabel_laporan_skp_kode",
+    url: "/e-kinerja2/v2/d_approve_skp/tabel_laporan_skp_kode",
     data: {
       KD_SKP: dataBawahan.kodeSKP,
       KD_TAHUN: that.thnSKP, 

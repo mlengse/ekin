@@ -20,7 +20,7 @@ exports._getLaporanTamsil = async ({that, a }) => {
     }
     that.tamsil = await that.evalTimedOut({
       evalFunc: [async post => {
-        let response = await fetch('/e-kinerja/v1/laporan_realisasi_pegawai/tabel_laporan_tamsil', post)
+        let response = await fetch('/e-kinerja2/v2/laporan_realisasi_pegawai/tabel_laporan_tamsil', post)
         let wrapper = document.querySelector('div')
         wrapper.insertAdjacentHTML('afterend', await response.text())
         let table = document.getElementById('tabel_laporan_tamsil')
@@ -54,14 +54,15 @@ exports._getLaporanTamsil = async ({that, a }) => {
 
   let dataBawahan = that.users[that.user.nama].dataBawahan
 
-  // console.log(dataBawahan)
   let indexNIPs = dataBawahan.map(({NIP_18}) => NIP_18 )
-  that.filteredTamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1)
-  if(!that.config.ALL){
-    that.filteredTamsil = that.filteredTamsil.filter( tamsil => Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
-  }
+  that.tamsil = that.tamsil.filter( tamsil => indexNIPs.indexOf(tamsil.nip) > -1 && that.dataBawahanObj[tamsil.nip])
+  that.filteredTamsil = that.tamsil.filter( tamsil => Number(parseFloat(tamsil.kinerjaPersen)/100) < 1)
   // console.log(that.filteredTamsil)
-  that.filteredTamsil.length && that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} bln ${blnNum} ${thn} dengan kinerja < 100%`)
+  if(that.filteredTamsil.length) {
+    that.spinner.succeed(`${that.filteredTamsil.length} laporan tamsil staff dari ${that.user.nl} bln ${blnNum} ${thn} dengan kinerja < 100%`)
+  } else {
+    that.spinner.succeed(`${that.tamsil.length} laporan tamsil staff dari ${that.user.nl} bln ${blnNum} ${thn} keseluruhan sudah approve`)
+  }
   return that.filteredTamsil
   
 }
