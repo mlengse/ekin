@@ -3,7 +3,7 @@ moment.locale('id')
 
 exports.moment = moment
 exports.thnSKP = moment().add(-1, 'year').format('YYYY')
-exports.isApproveSKP = moment().add(-1, 'month').format('YYYY') === moment().add(-1, 'year').format('YYYY')
+exports.isApproveSKP = moment().add(-10, 'day').format('YYYY') === moment().add(-1, 'year').format('YYYY')
 exports.getDateString1 = e => moment(e, 'DD/MM/YYYY').format('YYYYMMDD')
 exports.getDateString2 = e => moment(e, 'DD/MM/YYYY').format('YYYY-MM-DD')
 exports._syncTglLibur =  async ({that}) => {

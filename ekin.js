@@ -49,7 +49,7 @@ const ekinProcess = async ekin => {
             await ekin.getLaporanTamsil({ a })
             // }
 
-            await ekin.rebootIfErr( ekin.approveKegStaff, { a, i })
+            await ekin.approveKegStaff({ a, i })
           }
       }
       if((ekin.users[i].dataBawahan && !!ekin.users[i].dataBawahan.length) && ekin.isApproveSKP && ekin.users[i].skp){
@@ -61,7 +61,7 @@ const ekinProcess = async ekin => {
   }catch(e){
     console.error(JSON.stringify(e))
     console.error(`process error: ${new Date()}`)
-    await ekinProcess(ekin)
+    // await ekinProcess(ekin)
   }
 
 }

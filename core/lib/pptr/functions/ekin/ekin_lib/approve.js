@@ -7,22 +7,23 @@ exports._approve = async ({that, act, poin}) => {
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",                                                                                                
      },
     credentials: 'same-origin',
-    body: that.getParams({
+    body: act.keg === 'utama' ? that.getParams({
       KD_REALISASI_KEGIATAN: act.kode,
       STATUS: 'S'
-      // NIP_BAWAHAN: dataBawahan.NIP_18,
-      // TANGGAL: that.getDateString2(acts[act].tgl)
+    }) : that.getParams({
+      KD_KEGIATAN_TAMBAHAN: act.kode,
+      STATUS: 'S'
     }),
   }
 
-  let set = await that.page.evaluate(async (post) => {
-    let res = await fetch('/e-kinerja2/v2/d_approve_realisasi_kegiatan/simpan', post)
+  let set = await that.page.evaluate(async (post, keg) => {
+    let res = await fetch(`/e-kinerja2/v2/${keg === 'utama' ? 'd_approve_realisasi_kegiatan' : 'd_approve_kegiatan_tambahan'}/simpan`, post)
     let dat = await res.json()
     return {
       status: dat.status,
       body: dat
     }
-  }, post)
+  }, post, act.keg)
     let uraian = Object.keys(act).filter(e=> ['act', 'kode', 'stat', 'bulan', 'res', 'kuantitas', 'poin'].indexOf(e) === -1).map( e => (`, ${act[e]}`)).join('')
     that.spinner.start(`approve${uraian}`)
   // console.log(set)

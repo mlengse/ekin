@@ -20,11 +20,11 @@ module.exports = class Core {
 
   async rebootIfErr(procc, arrgs) {
     try {
-      await procc(arrgs)
+      return await procc(arrgs)
     } catch(e) {
       console.error(JSON.stringify(e))
       console.error(`process error: ${new Date()}`)
-      await procc(arrgs)
+      return await procc(arrgs)
     }
 
   }

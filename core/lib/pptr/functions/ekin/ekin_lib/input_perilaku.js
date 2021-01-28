@@ -1,5 +1,4 @@
 exports._inputPerilaku = async ({ that, dataBawahan }) => {
-  that.spinner.start(`input perilaku${Object.keys(data).map( e => ` ${e} ${data[e]}`).join(',')}`)
   let data = {
     KD_SKP : dataBawahan.kodeSKP,
     ORIENTASI : that.getKualitasRand(),
@@ -9,6 +8,7 @@ exports._inputPerilaku = async ({ that, dataBawahan }) => {
     KERJASAMA : that.getKualitasRand(),
     KEPEMIMPINAN : that.getKualitasRand()
   }
+  that.spinner.start(`input perilaku${Object.keys(data).map( e => ` ${e} ${data[e]}`).join(',')}`)
   let res = await that.page.evaluate( async data => {
     return $.ajax({
       url  : "/e-kinerja2/v2/d_approve_skp/insert_perilaku",
