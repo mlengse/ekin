@@ -17,6 +17,7 @@ exports._approveKegStaff = async ({ that, a, i }) => {
   }
 
   for(tamsil of arr){
+    // console.log(tamsil)
 
     let maxPoin = max ? Math.round(max*( a == 0 ? (tglLengthReal < 20 ? (tglLength/tglSum) : 1 ) : 1 )) : false
 

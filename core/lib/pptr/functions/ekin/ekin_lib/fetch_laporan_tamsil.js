@@ -37,11 +37,12 @@ exports._getLaporanTamsil = async ({that, a }) => {
             golongan: null,
             jabatan: null,
             tpp: null,
+            poin: null,
+            kinerjaTPP: null,
+            kinerjaPersen: null,
             absenPersen: null,
             absenTPP: null,
-            poin: null,
-            kinerjaPersen: null,
-            kinerjaTPP: null,
+            lhTPP: null,
             totalTPP: null
           })
           r && rows.push(r)
