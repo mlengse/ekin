@@ -4,6 +4,9 @@ exports._approveKegStaff = async ({ that, a, i }) => {
   if(that.users[i].kabeh){
     max = false
   }
+  if(that.users[i].lapan){
+    max = 8201 * 0.8
+  }
   that.spinner.start('approveKegStaff')
   let indexNIPs = that.users[i].dataBawahan.map(({NIP_18}) => NIP_18 )
 
