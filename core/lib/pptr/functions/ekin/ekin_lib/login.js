@@ -3,6 +3,7 @@ exports._login = async ({ that, nama, username, password }) => {
   that.page = that.pages[0]
   await that.page.goto(that.config.EKIN_URL, that.config.waitOpt)
   // that.spinner.succeed()
+
   await that.getUserLogin()
   if(that.user && that.user.username) {
     if(that.user.username === username) {
@@ -21,7 +22,7 @@ exports._login = async ({ that, nama, username, password }) => {
       PASSWORD: password
     })
     let res = await that.page.evaluate(async body => {
-      let res = await fetch('/e-kinerja2/v2/login/cek_login', {
+      let res = await fetch('/e-kinerja2/v2/login/cek_login_admin', {
         method: 'POST',
         headers: {
           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",                                                                                                
