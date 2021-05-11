@@ -26,9 +26,10 @@ exports._getDataApprovalBawahan = async ({that, acts, dataBawahan, i, a}) => {
       that.spinner.succeed(`${actsArr.length} belum diapprove dari ${Object.keys(acts).length} realisasi kegiatan ${dataBawahan.NAMA}`)
     }
     
-    if(dataBawahan.NAMA.toLowerCase().includes('rini setyowati')) {
+    if(dataBawahan.NAMA.toLowerCase().includes('rini setiyowati')
+    || dataBawahan.NAMA.toLowerCase().includes('riza wachidul')) {
       that.spinner.info(`${dataBawahan.NAMA} hold`)
-      return []
+      actsArr = []
     }
 
     return actsArr

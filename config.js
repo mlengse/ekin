@@ -1,6 +1,6 @@
 const {
   CHROME_PATH,
-  USER_DATA_PATH,
+  // USER_DATA_PATH,
 } = process.env
 let pptrOpt = {}
 // console.log(process.platform)
@@ -9,7 +9,7 @@ if(process.platform === 'win32' || CHROME_PATH ) {
     // headless: true,
     headless: false,
     executablePath: `${CHROME_PATH}`, 
-    userDataDir: `${USER_DATA_PATH}`,
+    // userDataDir: `${USER_DATA_PATH}`,
     args: [
       '--content-shell-hide-toolbar',
       '--hide',
@@ -21,7 +21,7 @@ if(process.platform === 'win32' || CHROME_PATH ) {
 } else {
   pptrOpt = {
     headless: true,
-    userDataDir: `${USER_DATA_PATH}`,
+    // userDataDir: `${USER_DATA_PATH}`,
     args: [
       '--no-sandbox', 
       '--disable-setuid-sandbox', 
