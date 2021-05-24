@@ -1,15 +1,18 @@
 exports._inputKegiatan = async({ that, keg }) => {
   that.spinner.start('input kegiatan')
-  let kd = await that.page.evaluate( async (keg, opt) => {
+  let dataKd = await that.page.evaluate( async opt => {
     window.confirm = (_, __) => true
     $("#KD_BULAN").html(opt);
-    let dataKd = await $.ajax({
+    return await $.ajax({
       type: "POST",
       url: "/e-kinerja2/v2/d_realisasi_kegiatan/buat_kode_d_realisasi_kegiatan",
     })
-    if(dataKd){
-      dataKd = JSON.parse(dataKd);
-      if(dataKd.status) {
+  }, that.bulan_opt)
+  if(dataKd){
+    dataKd = JSON.parse(dataKd);
+    // console.log(dataKd)
+    if(dataKd.status) {
+      let kd = await that.page.evaluate( async (keg, dataKd) => {
         let data
         function klik_data_d_kegiatan_bulan(_____,____,KD_KEGIATAN_BULAN,___,NM_KEGIATAN_BULAN,__,_,KETERANGAN){
           data = { 
@@ -33,12 +36,15 @@ exports._inputKegiatan = async({ that, keg }) => {
         })
         dataSmp = JSON.parse(dataSmp)
         return Object.assign({}, dataKd.data[0], dataSmp, keg)
+    
+      }, keg, dataKd)
+      that.spinner.succeed(`${kd.msg} ${kd.tgl} ${kd.nmKeg}`)
+      if(kd.error === null && kd.msg === "Data berhasil disimpan") {
+        await that.fetchRealKeg({ tgl: keg.tgl })
       }
+        
     }
-  }, keg, that.bulan_opt)
-  that.spinner.succeed(`${kd.msg} ${kd.tgl} ${kd.nmKeg}`)
-  if(kd.error === null && kd.msg === "Data berhasil disimpan") {
-    await that.fetchRealKeg({ tgl: keg.tgl })
   }
+
 
 }

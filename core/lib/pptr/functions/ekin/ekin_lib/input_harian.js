@@ -40,7 +40,9 @@ exports._inputHarian = async ({ that, a, i }) => {
       let kegBln = that.kegBulan.filter(({nmKeg}) => nmKeg === plan.kegiatan)
       if(plan[bln] && kegBln.length ) {
         if(kegBln[0].tgtKuant > 1 ) {
+          // console.log(plan.aktivitas.toLowerCase())
           let actvs = that.getAktivitas().filter( ({NM_AKTIVITAS}) => NM_AKTIVITAS.toLowerCase() === plan.aktivitas.toLowerCase())[0]
+          // console.log(actvs)
           let tglSum = tglObj.tglSum
           let tglLength = tglObj.tglLength
           let jmlInp = Math.ceil(kegBln[0].tgtKuant / (tglSum - tglLength)).toFixed()
@@ -54,8 +56,9 @@ exports._inputHarian = async ({ that, a, i }) => {
           })
           let kegExist = that.realKeg.filter( ({tgl, nmKeg}) => tgl === keg.tgl && keg.nmKeg === nmKeg)
           // kegExist.length && console.log(kegExist)
+          // console.log(keg)
           
-          that.totalPoin < maxPoin && !kegExist.length && await that.inputKegiatan({ keg })
+          actvs && that.totalPoin < maxPoin && !kegExist.length && await that.inputKegiatan({ keg })
         }
       }
     }
